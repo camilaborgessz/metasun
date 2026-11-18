@@ -319,8 +319,43 @@
     animation-name: fluxo-x;
   }
 }
-.bess-pausado .fluxo-linha {
+.bess-pausado .fluxo-linha,
+.bess-pausado .raio-luz {
   animation-play-state: paused;
+}
+
+/* ---------- Raios de luz (RaiosDeLuz, na seção BESS) ----------
+   Faixas desfocadas com degradê Sol → transparente, que balançam (±4°) e pulsam de brilho. O conjunto
+   esmaece para baixo (máscara). O brilho máximo é baixo para o texto cinza seguir legível. */
+.raios-luz {
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 35%, transparent 85%);
+  mask-image: linear-gradient(to bottom, #000 0%, #000 35%, transparent 85%);
+}
+.raio-luz {
+  position: absolute;
+  top: -12%;
+  left: var(--l);
+  width: var(--w);
+  height: 80%;
+  border-radius: 9999px;
+  transform-origin: 50% 0;
+  transform: translateX(-50%) rotate(var(--r));
+  background: linear-gradient(to bottom, rgba(247, 162, 27, 0.9), rgba(247, 162, 27, 0) 92%);
+  filter: blur(34px);
+  mix-blend-mode: screen;
+  opacity: var(--i); /* parado (movimento reduzido ou pausado): fica neste brilho */
+  will-change: transform, opacity;
+  animation: raio-luz var(--t) ease-in-out var(--d) infinite alternate;
+}
+@keyframes raio-luz {
+  from {
+    opacity: calc(var(--i) * 0.4);
+    transform: translateX(-50%) rotate(calc(var(--r) - 4deg));
+  }
+  to {
+    opacity: var(--i);
+    transform: translateX(-50%) rotate(calc(var(--r) + 4deg));
+  }
 }
 
 /* ---------- Linha entre as etapas (Step) ----------

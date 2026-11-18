@@ -60,8 +60,18 @@ function Fluxo() {
   );
 }
 
-export default function BessDiagram() {
-  const [pausado, setPausado] = useState(false);
+type Props = {
+  /** pausa controlada de fora (a BessSection usa o mesmo botão para o diagrama e os raios de luz) */
+  pausado?: boolean;
+  aoAlternar?: () => void;
+};
+
+export default function BessDiagram({ pausado: pausadoFora, aoAlternar }: Props) {
+  // Sem props (ex.: na rota /dev) o diagrama cuida da própria pausa
+  const [pausadoLocal, setPausadoLocal] = useState(false);
+  const controlado = pausadoFora !== undefined;
+  const pausado = controlado ? pausadoFora : pausadoLocal;
+  const alternar = () => (controlado ? aoAlternar?.() : setPausadoLocal((p) => !p));
 
   return (
     <div
@@ -76,7 +86,7 @@ export default function BessDiagram() {
           onDark
           seta={false}
           aria-pressed={pausado}
-          onClick={() => setPausado((p) => !p)}
+          onClick={alternar}
           className="aria-pressed:bg-branco aria-pressed:text-grafite"
         >
           {pausado ? <IconePlay className="size-5" /> : <IconePausa className="size-5" />}
