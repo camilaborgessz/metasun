@@ -1,5 +1,5 @@
 import { cta } from "../content/navegacao";
-import { IconeSetaDiagonal } from "./icons";
+import BotaoAnimado from "./BotaoAnimado";
 
 // Hero A (imersiva escura): foto em cover dentro de um cartão com moldura areia.
 // Valores do mockup docs/reference/hero-a: moldura 20px (12px abaixo de 900px), cartão com cantos 32px,
@@ -17,7 +17,8 @@ export default function Hero() {
       data-tema="escuro"
       className="flex min-h-[clamp(640px,100svh,860px)] bg-areia p-3 min-[900px]:p-5"
     >
-      <div className="relative isolate flex flex-1 flex-col justify-end overflow-hidden rounded-[32px] bg-grafite">
+      {/* hero-cartao: encolhe ao rolar a página (CSS em index.css) */}
+      <div className="hero-cartao relative isolate flex flex-1 flex-col justify-end overflow-hidden rounded-[32px] bg-grafite">
         {/* Foto principal da página: carrega primeiro (fetchPriority alta, sem lazy) */}
         <img
           src={`${FOTO}-1280.webp`}
@@ -43,16 +44,10 @@ export default function Hero() {
 
 
           <div className="mt-2 flex w-full flex-col gap-3.5 min-[900px]:w-auto min-[900px]:flex-row min-[900px]:items-center">
-            {/* Primário: pílula Sol com círculo grafite e seta */}
-            <a
-              href={cta.href}
-              className="flex h-[58px] items-center justify-between gap-3.5 rounded-full bg-sol pl-7 pr-2 text-base font-bold text-grafite transition-opacity hover:opacity-[.88] min-[900px]:justify-start"
-            >
+            {/* Primário: botão animado (círculo que preenche + setas que trocam de lugar) */}
+            <BotaoAnimado href={cta.href} className="w-full min-[900px]:w-auto">
               {cta.rotulo}
-              <span className="flex size-[42px] shrink-0 items-center justify-center rounded-full bg-grafite text-sol">
-                <IconeSetaDiagonal className="size-[18px]" />
-              </span>
-            </a>
+            </BotaoAnimado>
 
             {/* Secundário: vidro com borda branca */}
             <a
