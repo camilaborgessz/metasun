@@ -49,12 +49,12 @@ export default function Hero() {
               {cta.rotulo}
             </BotaoAnimado>
 
-            {/* Secundário: vidro com borda branca */}
+            {/* Secundário: vidro com borda branca e brilho no hover (.btn-brilho, em index.css) */}
             <a
               href="#bess"
-              className="vidro flex h-[58px] items-center justify-center rounded-full border-[1.5px] border-branco/60 px-7 text-base font-semibold text-branco transition-opacity hover:opacity-[.88]"
+              className="vidro btn-brilho flex h-[58px] items-center justify-center rounded-full border-[1.5px] border-branco/60 px-7 text-base font-semibold text-branco"
             >
-              Conhecer o BESS
+              <span className="relative z-10">Conhecer o BESS</span>
             </a>
           </div>
         </div>

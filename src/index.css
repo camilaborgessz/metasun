@@ -170,6 +170,35 @@
   scale: 0.95;
 }
 
+/* ---------- Botão com brilho (secundário do Hero) ----------
+   Adaptado de Uiverse.io (iZOXVL, "boton-elegante"). No hover/foco um círculo de luz cresce a
+   partir do centro, a borda clareia e o fundo fica um pouco mais claro. Sem box-shadow. */
+.btn-brilho {
+  position: relative;
+  overflow: hidden;
+  transition:
+    border-color 0.4s ease,
+    background-color 0.4s ease;
+}
+.btn-brilho::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0) 70%);
+  transform: scale(0);
+  transition: transform 0.5s ease;
+}
+.btn-brilho:hover::after,
+.btn-brilho:focus-visible::after {
+  transform: scale(4);
+}
+.btn-brilho:hover,
+.btn-brilho:focus-visible {
+  border-color: rgba(255, 255, 255, 0.95);
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
 /* Vidro. Sem suporte a backdrop-filter o fundo fica mais opaco para o texto continuar legível. */
 .vidro,
 .vidro-menu {
