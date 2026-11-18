@@ -7,6 +7,7 @@ import type { ReactNode } from "react";
 // Movimento: o degradê dá UMA volta de 5s e para (regra 7 do CLAUDE.md: movimento acima de 5s
 // precisa de botão de pausa); com movimento reduzido fica parado. Estilo em index.css (.aurora-texto).
 // Se o navegador não suporta texto com degradê, aparece em sol-texto liso.
+// Para FUNDO ESCURO passe `colors` claras (ex.: Sol, âmbar claro e branco), como na BessSection.
 
 const CORES_PADRAO = ["#A65800", "#1C1C1C", "#8F4B00", "#A65800"];
 
@@ -17,12 +18,20 @@ type Props = {
   colors?: string[];
   /** 1 = volta de 5s; 2 = 2,5s */
   velocidade?: number;
+  /** true = o texto pode quebrar de linha no meio de uma frase (usar dentro de títulos) */
+  emLinha?: boolean;
 };
 
-export default function AuroraText({ children, className = "", colors = CORES_PADRAO, velocidade = 1 }: Props) {
+export default function AuroraText({
+  children,
+  className = "",
+  colors = CORES_PADRAO,
+  velocidade = 1,
+  emLinha = false,
+}: Props) {
   const gradiente = `linear-gradient(135deg, ${colors.join(", ")}, ${colors[0]})`;
   return (
-    <span className={`relative inline-block ${className}`}>
+    <span className={`relative ${emLinha ? "inline" : "inline-block"} ${className}`}>
       {/* o leitor de tela lê o texto normal; o texto com degradê é só visual */}
       <span className="sr-only">{children}</span>
       <span

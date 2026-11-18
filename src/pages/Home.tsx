@@ -1,13 +1,13 @@
 import BessSection from "../components/BessSection";
 import ComoFunciona from "../components/ComoFunciona";
-import Footer from "../components/Footer";
+// import Footer from "../components/Footer"; // FOOTER COMENTADO: a Camila vai arrumar. Para voltar, descomente esta linha e o <Footer /> abaixo.
 import FrentesSection from "../components/FrentesSection";
 import Header from "../components/Header";
 import Hero from "../components/Hero";
 import NumerosSection from "../components/NumerosSection";
 
 // Home. Ordem: Header · Hero (grafite) · Números (areia) · Três frentes (branco) ·
-// Como funciona (areia) · BESS (marinho) · Footer.
+// Como funciona (areia) · BESS (marinho) · Footer (COMENTADO por enquanto, ver abaixo).
 export default function Home() {
   return (
     <>
@@ -28,7 +28,7 @@ export default function Home() {
         <BessSection />
       </main>
 
-      <Footer />
+      {/* <Footer /> */}
     </>
   );
 }

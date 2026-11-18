@@ -323,19 +323,71 @@
   animation-play-state: paused;
 }
 
-/* ---------- Fundo de pontos (BessSection) ----------
-   Padrão de pontos do Magic UI (Dot Pattern): pontos de 1px a cada 16px, brancos e suaves sobre o
-   azul-marinho, que aparecem no centro da seção e esmaecem para as bordas (máscara radial). */
-.fundo-pontos::before {
+/* ---------- Fundo "circuito" escuro (BessSection) ----------
+   Mesma grade de quadradinhos dos números (linhas a cada 20px e pontos nos cruzamentos), mas em
+   BRANCO muito suave sobre o azul-marinho: 5% nas linhas e 9% nos pontos, para o texto continuar
+   legível (o contraste foi medido: ver CLAUDE.md). Some nas bordas de cima e de baixo. */
+.fundo-circuito-escuro {
+  position: relative;
+  isolation: isolate;
+}
+.fundo-circuito-escuro::before {
   content: "";
   position: absolute;
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.32) 1px, transparent 1.5px);
-  background-size: 16px 16px;
-  -webkit-mask-image: radial-gradient(ellipse 65% 55% at 50% 45%, #000 0%, transparent 100%);
-  mask-image: radial-gradient(ellipse 65% 55% at 50% 45%, #000 0%, transparent 100%);
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 19px,
+      rgba(255, 255, 255, 0.05) 19px,
+      rgba(255, 255, 255, 0.05) 20px,
+      transparent 20px,
+      transparent 39px,
+      rgba(255, 255, 255, 0.05) 39px,
+      rgba(255, 255, 255, 0.05) 40px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 19px,
+      rgba(255, 255, 255, 0.05) 19px,
+      rgba(255, 255, 255, 0.05) 20px,
+      transparent 20px,
+      transparent 39px,
+      rgba(255, 255, 255, 0.05) 39px,
+      rgba(255, 255, 255, 0.05) 40px
+    ),
+    radial-gradient(circle at 20px 20px, rgba(255, 255, 255, 0.09) 2px, transparent 2px),
+    radial-gradient(circle at 40px 40px, rgba(255, 255, 255, 0.09) 2px, transparent 2px);
+  background-size: 40px 40px;
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 15%, #000 85%, transparent);
+  mask-image: linear-gradient(to bottom, transparent, #000 15%, #000 85%, transparent);
+}
+
+/* ---------- Faixa que passa (BessSection: "Pioneira em BESS na Região Norte") ----------
+   A frase se repete em uma faixa que anda da direita para a esquerda. As pontas são transparentes e
+   o meio fica bem claro (máscara). Fica parada com movimento reduzido e pausa com o mouse em cima.
+   O trilho tem DUAS cópias iguais e anda -50%: quando a primeira sai, a segunda ocupa o lugar (sem salto). */
+.faixa-bess {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 28%, #000 72%, transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0%, #000 28%, #000 72%, transparent 100%);
+}
+.faixa-bess-trilho {
+  display: flex;
+  width: max-content;
+  animation: faixa-passando 30s linear infinite;
+}
+.faixa-bess:hover .faixa-bess-trilho {
+  animation-play-state: paused;
+}
+@keyframes faixa-passando {
+  to {
+    transform: translateX(-50%);
+  }
 }
 
 /* ---------- Linha do tempo (BessSection + useScrollProgress) ----------
