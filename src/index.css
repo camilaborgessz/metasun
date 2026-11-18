@@ -1,0 +1,198 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ---------- Base ---------- */
+@layer base {
+  html {
+    /* o header sticky tem até 80px: evita que âncoras fiquem escondidas */
+    scroll-padding-top: 88px;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+  body {
+    font-family: var(--font);
+    font-size: 16px;
+    line-height: 1.6;
+    font-weight: 400;
+    color: var(--grafite);
+    background: var(--branco);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Foco visível: anel 3px, grafite no claro e laranja no escuro */
+  :focus-visible {
+    outline: 3px solid var(--grafite);
+    outline-offset: 3px;
+  }
+  [data-tema="escuro"] :focus-visible,
+  [data-tema="escuro"]:focus-visible {
+    outline-color: var(--sol);
+  }
+}
+
+/* ---------- Hero A: gradiente sobre a foto e vidro ----------
+   O gradiente mantém o formato do mockup (escuro em cima, mais claro no meio, escuro embaixo)
+   mas é mais forte na metade de baixo: com o gradiente original o pixel mais claro da foto dava
+   só 3,5:1 com texto branco e 1,7:1 com o laranja. Com este: branco ≥7,7:1 e laranja ≥3,7:1
+   no pior pixel (≥4,9:1 em 99% dos pixels) a 1440 e 1024px.
+   Abaixo de 900px o texto começa mais alto na foto, então o gradiente escurece mais cedo. */
+.hero-gradiente {
+  background: linear-gradient(
+    180deg,
+    rgba(28, 28, 28, 0.45) 0%,
+    rgba(28, 28, 28, 0.2) 30%,
+    rgba(28, 28, 28, 0.72) 45%,
+    rgba(28, 28, 28, 0.86) 62%,
+    rgba(28, 28, 28, 0.95) 100%
+  );
+}
+@media (max-width: 899px) {
+  .hero-gradiente {
+    background: linear-gradient(
+      180deg,
+      rgba(28, 28, 28, 0.5) 0%,
+      rgba(28, 28, 28, 0.62) 16%,
+      rgba(28, 28, 28, 0.84) 30%,
+      rgba(28, 28, 28, 0.9) 55%,
+      rgba(28, 28, 28, 0.95) 100%
+    );
+  }
+}
+
+/* Vidro. Sem suporte a backdrop-filter o fundo fica mais opaco para o texto continuar legível. */
+.vidro,
+.vidro-menu {
+  background: rgba(28, 28, 28, 0.7);
+}
+@supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  .vidro {
+    background: rgba(255, 255, 255, 0.14);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+  }
+  /* A pílula do menu fica sobre o céu claro da foto: véu grafite em vez de branco (contraste 6,5:1) */
+  .vidro-menu {
+    background: rgba(28, 28, 28, 0.55);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+  }
+}
+
+/* ---------- Fluxo do BessDiagram ----------
+   Traços laranja de 10px (período de 20px) que correm em 1s, em loop. No celular o fluxo desce
+   (vertical); a partir de 768px corre para a direita. O botão "Pausar animação" liga .bess-pausado.
+   Com prefers-reduced-motion o tokens.css já desliga a animação: as linhas ficam paradas. */
+@keyframes fluxo-y {
+  to {
+    background-position: 0 20px;
+  }
+}
+@keyframes fluxo-x {
+  to {
+    background-position: 20px 0;
+  }
+}
+.fluxo-linha {
+  background-image: repeating-linear-gradient(180deg, var(--sol) 0 10px, transparent 10px 20px);
+  background-size: 2px 20px;
+  animation: fluxo-y 1s linear infinite;
+}
+@media (min-width: 768px) {
+  .fluxo-linha {
+    background-image: repeating-linear-gradient(90deg, var(--sol) 0 10px, transparent 10px 20px);
+    background-size: 20px 2px;
+    animation-name: fluxo-x;
+  }
+}
+.bess-pausado .fluxo-linha {
+  animation-play-state: paused;
+}
+
+/* ---------- Linha entre as etapas (Step) ----------
+   Padrão (sem suporte a animation-timeline, ou movimento reduzido): linha já cheia.
+   Com suporte, ela preenche conforme a página rola. No celular é vertical (scaleY),
+   a partir de 768px é horizontal (scaleX). O tokens.css desliga animation com
+   prefers-reduced-motion, então o estado final (cheio) é o que aparece. */
+@keyframes step-preencher-y {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+@keyframes step-preencher-x {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+@supports (animation-timeline: view()) {
+  .step-trilho {
+    view-timeline: --step-trilho block;
+  }
+  .step-preenchimento {
+    animation: step-preencher-y linear both;
+    animation-timeline: --step-trilho;
+    /* começa quando a linha entra por baixo e termina por volta do meio da tela;
+       --i escalona as linhas (a do horizontal ficam na mesma altura) */
+    animation-range: cover calc(5% + var(--i, 0) * 7%) cover calc(40% + var(--i, 0) * 7%);
+  }
+  @media (min-width: 768px) {
+    .step-preenchimento {
+      animation-name: step-preencher-x;
+    }
+  }
+}
+
+/* ---------- Tipografia (tokens.json › type) ---------- */
+@layer components {
+  .t-display {
+    font-weight: 700;
+    font-size: clamp(36px, 6.4vw, 68px);
+    line-height: 1.04;
+    letter-spacing: -0.02em;
+  }
+  .t-h2 {
+    font-weight: 700;
+    font-size: clamp(28px, 4.2vw, 44px);
+    line-height: 1.12;
+    letter-spacing: -0.015em;
+  }
+  .t-h3 {
+    font-weight: 700;
+    font-size: clamp(19px, 2.2vw, 22px);
+    line-height: 1.25;
+  }
+  .t-lead {
+    font-size: clamp(17px, 2vw, 20px);
+    line-height: 1.55;
+  }
+  /* rótulo: 600, 12px, caixa alta, tracking .12em */
+  .t-label {
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 1.4;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .t-number {
+    font-weight: 700;
+    font-size: clamp(64px, 9vw, 112px);
+    line-height: 1;
+    letter-spacing: -0.03em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Container do conteúdo: 1120px com a margem lateral (gutter) dos tokens */
+  .container-meta {
+    width: min(100% - 2 * var(--gutter), var(--container));
+    margin-inline: auto;
+  }
+}

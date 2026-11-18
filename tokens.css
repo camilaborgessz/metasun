@@ -1,0 +1,16 @@
+/* Meta Sun · tokens v0.1. Itens "provisório" dependem de dado a confirmar. */
+:root{
+  --sol:#F7A21B; --grafite:#1C1C1C; --branco:#FFFFFF; --areia:#F5F3EF;
+  --cinza-texto:#6B6B6B; --sol-texto:#A65800;
+  --marinho:#14284B;            /* PROVISÓRIO: HEX a confirmar */
+  /* derivadas, provisórias */
+  --sol-hover:#E8910B; --sol-ativo:#D17F00; --desabilitado:#E9E6DF;
+  --apoio-escuro:#BDB9B0; --linha:#E3DFD6; --linha-escura:#3A3A3A;
+  --erro:#B3261E; --erro-escuro:#FFB4AB;
+  --font:Montserrat,Arial,sans-serif;
+  --r-campo:6px; --r-botao:8px; --r-card:12px;
+  --container:1120px; --gutter:clamp(20px,5vw,64px); --section-y:clamp(56px,9vw,104px);
+  --ease:cubic-bezier(.2,.7,.2,1);
+  --t-fast:150ms; --t-base:250ms; --t-slow:600ms; --t-count:1600ms; --t-arc:1200ms;
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
