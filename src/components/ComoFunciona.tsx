@@ -249,11 +249,13 @@ export default function ComoFunciona() {
         </h2>
 
         {/* menu de 259px + 42px de vão + card (1fr), como na referência */}
-        <div className="mt-14 grid gap-y-2 min-[992px]:grid-cols-[259px_minmax(0,1fr)] min-[992px]:gap-x-[42px]">
+        {/* No celular a coluna é minmax(0,1fr): sem isso a barra de etapas (rolagem horizontal) esticava a
+            coluna e o card ficava mais largo que a tela. */}
+        <div className="mt-14 grid grid-cols-[minmax(0,1fr)] gap-y-2 min-[992px]:grid-cols-[259px_minmax(0,1fr)] min-[992px]:gap-x-[42px]">
           {/* Menu: lateral e sticky no desktop; barra horizontal de itens com scroll lateral no celular */}
           <nav
             aria-label="Etapas"
-            className="z-30 -mx-[var(--gutter)] bg-areia px-[var(--gutter)] py-2 max-[991px]:sticky max-[991px]:top-[84px] min-[992px]:sticky min-[992px]:top-[105px] min-[992px]:mx-0 min-[992px]:self-start min-[992px]:bg-transparent min-[992px]:p-0"
+            className="z-30 -mx-[var(--gutter)] bg-areia px-[var(--gutter)] py-2 max-[991px]:sticky max-[991px]:top-[72px] max-[991px]:pt-4 min-[992px]:sticky min-[992px]:top-[105px] min-[992px]:mx-0 min-[992px]:self-start min-[992px]:bg-transparent min-[992px]:p-0"
           >
             <ol
               ref={listaRef}
