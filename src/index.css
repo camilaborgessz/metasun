@@ -66,13 +66,14 @@
   }
 }
 
-/* O cartão do Hero (foto + texto) diminui conforme a página rola: de 100% para 88% em 70% da
+/* O cartão do Hero (foto + texto) diminui conforme a página rola: de 100% para 72% em 80% da
    altura da tela, encolhendo para o topo. É só transform (não mexe no layout, sem CLS).
+   Para mais ou menos encolhimento, mude o 0.72 (1 = não encolhe).
    Funciona com animation-timeline: scroll() (Chrome/Edge 115+, Safari 26+). Sem suporte, ou com
    movimento reduzido (o tokens.css desliga animation), o cartão fica no tamanho cheio. */
 @keyframes hero-encolher {
   to {
-    transform: scale(0.88);
+    transform: scale(0.72);
   }
 }
 @supports (animation-timeline: scroll()) {
@@ -81,93 +82,90 @@
     will-change: transform;
     animation: hero-encolher linear both;
     animation-timeline: scroll(root block);
-    animation-range: 0 70vh;
+    animation-range: 0 80vh;
   }
 }
 
-/* ---------- Botão animado (BotaoAnimado) ----------
-   Adaptado de Uiverse.io (gharsh11032000/loud-chicken-53). Mudanças: sem box-shadow (elevação é
-   plana), cores da Meta Sun e círculo proporcional à largura (para o botão largo do celular). */
-.btn-animado {
-  --curva: cubic-bezier(0.23, 1, 0.32, 1);
+/* ---------- Botão com borda em gradiente (BotaoBordaGradiente) ----------
+   Adaptado do "Hover Border Gradient" (Aceternity UI), só com CSS. Um brilho branco corre pela
+   borda (a posição vem de --bx/--by, que o React troca a cada 1s por 4s) e, no hover/foco, a
+   borda acende por inteiro. @property deixa o navegador animar a posição do brilho.
+   Sem box-shadow. Com movimento reduzido o tokens.css desliga as transições. */
+@property --bx {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 50%;
+}
+@property --by {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 0%;
+}
+.borda-botao {
   position: relative;
+  display: inline-flex;
+  width: fit-content;
+  padding: 2px; /* espessura da borda */
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.2);
+  transition: background-color 0.5s ease;
+}
+.borda-botao:hover,
+.borda-botao:focus-visible {
+  background: rgba(255, 255, 255, 0.1);
+}
+.borda-face {
+  position: relative;
+  z-index: 10;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 58px;
-  padding: 0 36px;
-  border: 2px solid var(--sol);
-  border-radius: 100px;
+  gap: 12px;
+  width: 100%;
+  min-height: 54px;
+  padding: 0 32px;
+  border-radius: inherit;
   background: var(--sol);
   color: var(--grafite);
   font-size: 16px;
   font-weight: 700;
-  overflow: hidden;
-  transition:
-    color 0.6s var(--curva),
-    border-radius 0.6s var(--curva),
-    scale 0.6s var(--curva);
+  transition: background-color 0.3s ease;
 }
-.btn-animado svg {
+.borda-botao:hover .borda-face,
+.borda-botao:focus-visible .borda-face {
+  background: var(--sol-hover);
+}
+.borda-botao:active .borda-face {
+  background: var(--sol-ativo);
+}
+.borda-luz,
+.borda-acesa {
   position: absolute;
-  width: 24px;
-  fill: currentColor;
-  z-index: 9;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  filter: blur(2px);
+  pointer-events: none;
+}
+.borda-luz {
+  background: radial-gradient(20.7% 50% at var(--bx) var(--by), #fff 0%, rgba(255, 255, 255, 0) 100%);
   transition:
-    left 0.8s var(--curva),
-    right 0.8s var(--curva);
+    --bx 1s linear,
+    --by 1s linear,
+    opacity 0.6s linear;
 }
-.btn-animado .seta-1 {
-  right: 16px;
-}
-.btn-animado .seta-2 {
-  left: -25%;
-}
-.btn-animado .circulo {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 20px;
-  aspect-ratio: 1;
-  transform: translate(-50%, -50%);
-  background: var(--grafite);
-  border-radius: 50%;
+.borda-acesa {
+  background: radial-gradient(75% 181% at 50% 50%, #ffe2b0 0%, rgba(255, 255, 255, 0) 100%);
   opacity: 0;
-  transition:
-    width 0.8s var(--curva),
-    opacity 0.8s var(--curva);
+  transition: opacity 0.6s linear;
 }
-.btn-animado .texto {
-  position: relative;
-  z-index: 1;
-  transform: translateX(-12px);
-  transition: transform 0.8s var(--curva);
+.borda-botao:hover .borda-luz,
+.borda-botao:focus-visible .borda-luz {
+  opacity: 0;
 }
-/* hover e foco por teclado fazem a mesma coisa */
-.btn-animado:hover,
-.btn-animado:focus-visible {
-  color: var(--sol);
-  border-radius: 12px;
-}
-.btn-animado:hover .seta-1,
-.btn-animado:focus-visible .seta-1 {
-  right: -25%;
-}
-.btn-animado:hover .seta-2,
-.btn-animado:focus-visible .seta-2 {
-  left: 16px;
-}
-.btn-animado:hover .texto,
-.btn-animado:focus-visible .texto {
-  transform: translateX(12px);
-}
-.btn-animado:hover .circulo,
-.btn-animado:focus-visible .circulo {
-  width: 130%; /* 130% da largura cobre a diagonal do botão */
+.borda-botao:hover .borda-acesa,
+.borda-botao:focus-visible .borda-acesa {
   opacity: 1;
-}
-.btn-animado:active {
-  scale: 0.95;
 }
 
 /* ---------- Botão com brilho (secundário do Hero) ----------

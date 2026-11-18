@@ -79,16 +79,15 @@ export default function Header({ onDark = false, sobreFoto = false }: Props) {
               </a>
 
               <nav aria-label="Principal">
-                {/* ≥900px: pílula de vidro */}
-                <ul className="vidro-menu hidden items-center gap-1 rounded-full border border-branco/30 p-1.5 min-[900px]:flex">
+                {/* ≥900px: texto branco, sem pílula e sem item marcado. Só aparece um fundo
+                    leve no hover/foco; o item atual (aria-current) tem uma marca bem sutil. */}
+                <ul className="hidden items-center gap-1 min-[900px]:flex">
                   {itensPilula.map((item, i) => (
                     <li key={item.href}>
                       <a
                         href={item.href}
                         aria-current={i === 0 ? "page" : undefined}
-                        className={`flex min-h-11 items-center rounded-full px-5 text-[15px] transition-opacity hover:opacity-[.88] ${
-                          i === 0 ? "bg-sol font-semibold text-grafite" : "font-medium text-branco"
-                        }`}
+                        className="flex min-h-11 items-center rounded-full px-5 text-[15px] font-medium text-branco transition-colors duration-200 hover:bg-branco/15 focus-visible:bg-branco/15 aria-[current=page]:bg-branco/[.08]"
                       >
                         {item.rotulo}
                       </a>

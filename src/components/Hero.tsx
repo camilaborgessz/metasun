@@ -1,5 +1,6 @@
 import { cta } from "../content/navegacao";
-import BotaoAnimado from "./BotaoAnimado";
+import BotaoBordaGradiente from "./BotaoBordaGradiente";
+import CanvasText from "./CanvasText";
 
 // Hero A (imersiva escura): foto em cover dentro de um cartão com moldura areia.
 // Valores do mockup docs/reference/hero-a: moldura 20px (12px abaixo de 900px), cartão com cantos 32px,
@@ -38,16 +39,22 @@ export default function Hero() {
 
 
           <h1 className="text-[clamp(34px,5.6vw,58px)] font-semibold leading-[1.08] tracking-[-0.025em] text-branco">
-            Quanto o <span className="text-sol">horário de ponta</span> pesa no resultado da sua
-            empresa?
+            Quanto o{" "}
+            {/* palavras em destaque: linhas onduladas dentro das letras (1 ciclo de 5s, mouse repete) */}
+            <CanvasText text="horário de ponta" className="text-sol" />{" "}
+            pesa no resultado da sua empresa?
           </h1>
 
+          {/* Subtítulo */}
+          <p className="max-w-[52ch] text-[clamp(17px,1.6vw,20px)] leading-[1.55] text-branco">
+            Fazemos o estudo do consumo da sua empresa e apresentamos a economia estimada.
+          </p>
 
           <div className="mt-2 flex w-full flex-col gap-3.5 min-[900px]:w-auto min-[900px]:flex-row min-[900px]:items-center">
-            {/* Primário: botão animado (círculo que preenche + setas que trocam de lugar) */}
-            <BotaoAnimado href={cta.href} className="w-full min-[900px]:w-auto">
+            {/* Primário: borda em gradiente (brilho que corre pela borda; acende no hover) */}
+            <BotaoBordaGradiente href={cta.href} className="w-full min-[900px]:w-auto">
               {cta.rotulo}
-            </BotaoAnimado>
+            </BotaoBordaGradiente>
 
             {/* Secundário: vidro com borda branca e brilho no hover (.btn-brilho, em index.css) */}
             <a
