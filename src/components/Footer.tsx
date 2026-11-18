@@ -47,10 +47,8 @@ export default function Footer({ onAbrirCookies }: Props) {
       <div className="container-meta py-[var(--section-y)]">
         <div className="grid gap-12 sm:grid-cols-2 lg:grid-cols-[1.3fr_1fr_1fr_1fr]">
           <div>
-            {/* As letras do logo são pretas e somem no grafite: placa branca (fundo permitido) */}
-            <span className="inline-block rounded-botao bg-branco p-3">
-              <Logo className="h-10" />
-            </span>
+            {/* Fundo grafite: versão com letras brancas, sem placa */}
+            <Logo negativo className="h-14" />
             <p className="mt-6 text-lg font-bold">Engenharia que gera economia.</p>
             <p className="mt-2 max-w-[34ch] text-apoio-escuro">
               Engenharia de energia em Porto Velho e Cacoal (RO).

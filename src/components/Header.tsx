@@ -74,10 +74,8 @@ export default function Header({ onDark = false, sobreFoto = false }: Props) {
           <div className="pointer-events-auto absolute inset-x-0 top-8 px-8 min-[900px]:top-[52px] min-[900px]:px-16">
             <div className="relative flex h-[60px] items-center justify-between gap-4">
               <a href="/" aria-label="Meta Sun, página inicial" className="shrink-0 rounded-botao">
-                {/* Letras pretas sobre a foto: placa branca atrás do logo */}
-                <span className="flex items-center rounded-botao bg-branco px-3 py-2">
-                  <Logo className="h-10 min-[900px]:h-11" />
-                </span>
+                {/* Sobre a foto escura: versão com letras brancas, sem fundo */}
+                <Logo negativo className="h-12 min-[900px]:h-14" />
               </a>
 
               <nav aria-label="Principal">

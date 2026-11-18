@@ -15,7 +15,7 @@ NÃO pode parecer site institucional de 2015 nem loja de energia solar. Proibido
 
 ## Regras inegociáveis
 1. **Não invente** número, logo, depoimento, foto, endereço, telefone nem selo. Tudo que depende de dado real vem de `src/content/placeholders.ts` como `[00]`, `[WHATSAPP]` etc., e mostra o chip "provisório" quando for visível.
-2. **Logo:** só arquivo oficial, sem alterar, em fundo branco, areia ou grafite. Vale o **SVG enviado pela Camila** (`src/assets/logo-meta-sun.svg`, fundo transparente, só com a `viewBox` recortada), usado pelo componente `<Logo />`. Ainda falta a **versão negativa** (para fundo escuro): enquanto isso, sobre fundo escuro o logo vai em placa branca (Footer e Header sobre a foto). Nunca desenhe nem vetorize o logo por conta própria (a vetorização automática antiga fica só como reserva em `docs/reserva/` e não é importada).
+2. **Logo:** só arquivo oficial, sem alterar, em fundo branco, areia ou grafite. Vale o **SVG enviado pela Camila** (`src/assets/logo-meta-sun.svg`, fundo transparente, só com a `viewBox` recortada), usado pelo componente `<Logo />`. Sobre fundo escuro (Footer e Header sobre a foto) usa `<Logo negativo />`, **sem placa branca**: é `src/assets/logo-meta-sun-negativo.svg`, cópia do mesmo SVG em que só as letras (META e SUN) passam de preto para branco. **Provisório:** trocar pelo arquivo da versão negativa oficial quando chegar. Nunca desenhe nem vetorize o logo por conta própria (a vetorização automática antiga fica só como reserva em `docs/reserva/` e não é importada).
 3. **Cor:** proporção 60% branco/areia, 25% grafite (marinho nos destaques), 15% laranja. Alterne fundos entre seções.
    - Botão laranja leva texto **grafite** (branco sobre laranja dá 2,1:1).
    - Laranja Sol (#F7A21B) nunca é texto sobre branco/areia. Texto laranja e números grandes sobre claro: `sol-texto` (#A65800). Sobre escuro, números em Laranja Sol.
@@ -50,7 +50,7 @@ NÃO pode parecer site institucional de 2015 nem loja de energia solar. Proibido
 - **LogoStrip** grade estática de logos de clientes (placeholders), sem carrossel; fallback em texto se a imagem falhar.
 - **LeadForm** (estudo técnico): Nome, WhatsApp com DDD, Cidade (Porto Velho, Cacoal, Outra), Segmento (opcional), Valor médio da conta (opcional) + aceite LGPD desmarcado + botão "Solicitar estudo técnico". Rótulo sempre visível, erro junto do campo com ícone, resumo no topo, validar ao enviar (sem botão desabilitado). Campo: borda 2px cinza-texto, foco com anel grafite. Backend: por enquanto só um `onSubmit` com `console.log` e uma função `sendLead()` a implementar; pergunte para onde enviar.
 - **Faq** acordeão com `<details>/<summary>`, 4 itens de exemplo.
-- **Footer** grafite: logo (em placa branca até chegar a versão negativa), Porto Velho e Cacoal (endereços placeholder), navegação, contatos, CNPJ e responsável técnico placeholders, política de privacidade, preferências de cookies.
+- **Footer** grafite: logo (versão negativa, sem placa), Porto Velho e Cacoal (endereços placeholder), navegação, contatos, CNPJ e responsável técnico placeholders, política de privacidade, preferências de cookies.
 - **CookieNotice** base da tela, "Recusar não essenciais" e "Aceitar todos" lado a lado com o mesmo estilo, "Escolher quais cookies" abre categorias (essenciais travado, medição e marketing desligados).
 
 ## Home, nesta ordem
