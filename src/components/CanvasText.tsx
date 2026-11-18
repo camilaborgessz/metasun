@@ -2,9 +2,11 @@ import { useEffect, useRef, useState } from "react";
 
 // Texto com linhas onduladas animadas dentro das letras (efeito "Canvas Text", Aceternity UI),
 // reescrito sem dependências (sem clsx/tailwind-merge) e com as regras da Meta Sun:
-// - Movimento: anima UM ciclo (padrão 5s) e para, no mesmo desenho do início. Passar o mouse
-//   repete. Isso respeita a regra 7 do CLAUDE.md (movimento acima de 5s precisa de botão de
-//   pausa). Para animar sem parar use cycles={Infinity}, mas aí é preciso criar o botão de pausa.
+// - Movimento: por padrão anima UM ciclo (5s) e para (passar o mouse repete). Com cycles={Infinity}
+//   anima sem parar (é o caso do Hero, a pedido da Camila); como a regra 7 do CLAUDE.md pede botão de
+//   pausa para movimento acima de 5s, quem usa assim deve oferecer a prop `pausado` num botão.
+// - Só desenha enquanto está na tela e com a aba visível (economiza CPU/bateria).
+// - Ao pausar, redimensionar ou retomar, continua da fase em que estava (sem pular).
 // - Movimento reduzido: desenha um quadro parado, sem animar.
 // - O texto real aparece desde o início; o canvas só entra por cima quando está pronto.
 
@@ -20,12 +22,15 @@ type Props = {
   animationDuration?: number;
   /** quantos ciclos animar. Infinity = sem parar */
   cycles?: number;
+  /** congela a animação no quadro atual (para o botão de pausa) */
+  pausado?: boolean;
   lineWidth?: number;
   lineGap?: number;
   curveIntensity?: number;
 };
 
 const CORES_PADRAO = ["#FFD08A", "#F7A21B", "#E8910B", "#FFB84D", "#F7A21B", "#D17F00", "#FFC266"];
+const VOLTA = Math.PI * 2;
 
 export default function CanvasText({
   text,
@@ -34,13 +39,17 @@ export default function CanvasText({
   colors = CORES_PADRAO,
   animationDuration = 5,
   cycles = 1,
+  pausado = false,
   lineWidth = 2,
   lineGap = 5,
   curveIntensity = 40,
 }: Props) {
+  const raizRef = useRef<HTMLSpanElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const textoRef = useRef<HTMLSpanElement>(null);
   const rodando = useRef(false);
+  const naTela = useRef(true);
+  const faseRef = useRef(0); // fase atual da onda (radianos): guardada para retomar sem pular
   const [medidas, setMedidas] = useState({ largura: 0, altura: 0, fonte: "", espacamento: "0px" });
   const [pronto, setPronto] = useState(false);
   const [rodada, setRodada] = useState(0);
@@ -67,7 +76,18 @@ export default function CanvasText({
     return () => observador.disconnect();
   }, [text, className]);
 
-  // Desenha (e anima por `cycles` ciclos)
+  // Sabe se o texto está na tela (fora dela não desenha)
+  useEffect(() => {
+    const raiz = raizRef.current;
+    if (!raiz) return;
+    const observador = new IntersectionObserver(([entrada]) => {
+      naTela.current = entrada.isIntersecting;
+    });
+    observador.observe(raiz);
+    return () => observador.disconnect();
+  }, []);
+
+  // Desenha (e anima)
   useEffect(() => {
     const canvas = canvasRef.current;
     const { largura, altura, fonte, espacamento } = medidas;
@@ -112,16 +132,21 @@ export default function CanvasText({
     };
 
     const reduzido = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const total = animationDuration * cycles * 1000;
-    const inicio = performance.now();
+    const total = Number.isFinite(cycles) ? cycles * VOLTA : Infinity;
+    const animando = () => !reduzido && !pausado && faseRef.current < total;
+    let ultimo = performance.now();
     let quadro = 0;
-    rodando.current = !reduzido;
+    rodando.current = animando();
 
     const passo = (agora: number) => {
-      const decorrido = reduzido ? 0 : Math.min(agora - inicio, total);
-      desenhar((decorrido / 1000 / animationDuration) * Math.PI * 2);
+      const dt = Math.min((agora - ultimo) / 1000, 0.1); // trava em 100ms (ex.: aba que voltou)
+      ultimo = agora;
+      if (animando() && naTela.current && !document.hidden) {
+        faseRef.current = Math.min(faseRef.current + (dt / animationDuration) * VOLTA, total);
+      }
+      if (naTela.current) desenhar(reduzido ? 0 : faseRef.current);
       setPronto(true);
-      if (!reduzido && decorrido < total) quadro = requestAnimationFrame(passo);
+      if (animando()) quadro = requestAnimationFrame(passo);
       else rodando.current = false;
     };
     quadro = requestAnimationFrame(passo);
@@ -130,15 +155,18 @@ export default function CanvasText({
       cancelAnimationFrame(quadro);
       rodando.current = false;
     };
-  }, [text, medidas, chaveCores, baseColor, animationDuration, cycles, lineWidth, lineGap, curveIntensity, rodada]);
+  }, [text, medidas, chaveCores, baseColor, animationDuration, cycles, pausado, lineWidth, lineGap, curveIntensity, rodada]);
 
-  // Passar o mouse repete a animação (se não estiver rodando)
+  // Passar o mouse repete a animação quando ela é de ciclos finitos e já terminou
   const repetir = () => {
-    if (!rodando.current) setRodada((r) => r + 1);
+    if (!rodando.current && Number.isFinite(cycles) && !pausado) {
+      faseRef.current = 0;
+      setRodada((r) => r + 1);
+    }
   };
 
   return (
-    <span className={`relative inline-block ${className}`} onMouseEnter={repetir}>
+    <span ref={raizRef} className={`relative inline-block ${className}`} onMouseEnter={repetir}>
       {/* texto real: visível até o canvas ficar pronto; depois só ocupa o espaço */}
       <span ref={textoRef} aria-hidden="true" className={pronto ? "invisible inline-block" : "inline-block"}>
         {text}

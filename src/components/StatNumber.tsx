@@ -123,7 +123,14 @@ export default function StatNumber({
         <span className="sr-only">{final}</span>
       </p>
 
-      <p className={`mt-3 font-semibold ${corLabel}`}>{aurora ? <AuroraText>{rotulo}</AuroraText> : rotulo}</p>
+      {/* rótulo com Aurora: maior e mais forte (peso 700, 19–24px) para ter destaque */}
+      <p
+        className={`${
+          aurora ? "mt-4 text-[clamp(19px,1.8vw,24px)] font-bold leading-snug" : "mt-3 font-semibold"
+        } ${corLabel}`}
+      >
+        {aurora ? <AuroraText>{rotulo}</AuroraText> : rotulo}
+      </p>
       {(emValidacao || fonte) && (
         <p className={`mt-1 text-sm ${corApoio}`}>{emValidacao ? "Dado em validação." : fonte}</p>
       )}

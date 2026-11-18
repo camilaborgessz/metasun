@@ -307,7 +307,7 @@ export default function ComoFunciona() {
                 <div className="grid gap-[7px] rounded-[28px] bg-branco p-[7px] min-[992px]:grid-cols-[3fr_2fr] min-[992px]:rounded-[35px]">
                   {/* mídia: ~60% da largura, encosta nas bordas do card (raio 28px, um pouco menor que o
                       do card); overflow escondido para o parallax; no celular a foto fica em cima (4/3) */}
-                  <div className="relative aspect-[4/3] overflow-hidden rounded-[22px] min-[992px]:aspect-auto min-[992px]:min-h-[440px] min-[992px]:rounded-[28px]">
+                  <div className="relative aspect-[3/2] overflow-hidden rounded-[22px] min-[992px]:aspect-auto min-[992px]:min-h-[440px] min-[992px]:rounded-[28px]">
                     <div
                       ref={(el) => {
                         midias.current[i] = el;

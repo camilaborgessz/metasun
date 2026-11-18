@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { cta, navItens } from "../content/navegacao";
 import BotaoPreenche from "./BotaoPreenche";
-import Button from "./Button";
-import { IconeFechar, IconeMenu } from "./icons";
+import { IconeFechar, IconeMenu, IconeSeta } from "./icons";
 import Logo from "./Logo";
 
 // Header sticky em PÍLULA de vidro (inspirado no site de referência da Camila): logo, nav e CTA
@@ -10,7 +9,7 @@ import Logo from "./Logo";
 // só muda a cor:
 //   - sobreFoto (Home) no topo: pílula escura translúcida por cima da foto, texto e logo brancos
 //   - rolado (mais de 8px) ou nas outras páginas: pílula areia translúcida, texto grafite
-//   ≥900px: logo, nav (à esquerda) e CTA (à direita) · <900px: a nav vira menu · <640px: CTA vai para a barra da base.
+//   ≥900px: logo, nav (à esquerda) e CTA (à direita) · <900px: a nav vira menu · <640px: o CTA sai da pílula e vira um botão pequeno flutuante (BotaoCtaMobile).
 // A pílula vale como exceção de forma (como o Hero): o resto do site segue os raios 6, 8 e 12.
 
 type Props = {
@@ -131,19 +130,50 @@ export default function Header({ onDark = false, sobreFoto = false }: Props) {
         </div>
       </header>
 
-      <BarraCtaMobile />
+      <BotaoCtaMobile />
     </>
   );
 }
 
-// Barra fixa na base, só abaixo de 640px. Mantida clara em qualquer seção.
-// Altura: 12 + 48 + 12 = 72px (o WhatsAppFloat vai subir 72px quando ela existir).
-function BarraCtaMobile() {
+// Aparece só depois de passar do Hero (que já tem o próprio botão) e some quando o rodapé entra na tela.
+function deveMostrarCtaMobile(): boolean {
+  const passouDoHero = window.scrollY > window.innerHeight * 0.7;
+  const rodape = document.querySelector("footer");
+  const noRodape = rodape ? rodape.getBoundingClientRect().top < window.innerHeight - 40 : false;
+  return passouDoHero && !noRodape;
+}
+
+// CTA do celular (<640px): botão pequeno e discreto, flutuando no centro da base, no lugar da barra
+// larga de antes. Pílula branca com borda fina (aparece bem em seção clara e escura), 44px de altura.
+// Altura + margem = 60px (o WhatsAppFloat vai subir ~64px quando ele existir).
+function BotaoCtaMobile() {
+  const [visivel, setVisivel] = useState(deveMostrarCtaMobile);
+
+  useEffect(() => {
+    const atualizar = () => setVisivel(deveMostrarCtaMobile());
+    window.addEventListener("scroll", atualizar, { passive: true });
+    window.addEventListener("resize", atualizar);
+    return () => {
+      window.removeEventListener("scroll", atualizar);
+      window.removeEventListener("resize", atualizar);
+    };
+  }, []);
+
   return (
-    <div className="fixed inset-x-0 bottom-0 z-40 border-t border-linha bg-branco px-3 pt-3 pb-[max(12px,env(safe-area-inset-bottom))] sm:hidden">
-      <Button href={cta.href} className="w-full">
+    <div
+      // inert: escondido não recebe foco nem clique
+      inert={!visivel}
+      className={`fixed bottom-[max(16px,env(safe-area-inset-bottom))] left-1/2 z-40 -translate-x-1/2 transition-[opacity,transform] duration-300 sm:hidden ${
+        visivel ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
+      }`}
+    >
+      <a
+        href={cta.href}
+        className="inline-flex h-11 items-center gap-2 whitespace-nowrap rounded-full border border-linha bg-branco px-5 text-sm font-semibold text-grafite transition-colors duration-150 hover:bg-areia active:bg-linha"
+      >
         {cta.rotulo}
-      </Button>
+        <IconeSeta className="size-4" />
+      </a>
     </div>
   );
 }
