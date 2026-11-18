@@ -156,39 +156,77 @@
   scale: 0.97;
 }
 
-/* ---------- Cartões dos números (NumerosSection) ----------
-   Cartão grafite com borda fina. No hover: a borda fica Sol, o cartão sobe 4px (só sem movimento
-   reduzido) e um brilho laranja suave (gradiente radial, sem box-shadow) segue o mouse, usando
-   --x/--y que o React atualiza. */
-.tile-numero {
+/* ---------- Fundo "circuito" (NumerosSection) ----------
+   Padrão do Uiverse (Gautammsharma) adaptado: grade de linhas a cada 20px e pontos nos cruzamentos,
+   em grafite bem suave sobre o areia. Fica atrás do conteúdo e some nas bordas de cima e de baixo
+   (para não brigar com as seções vizinhas). */
+.fundo-circuito {
   position: relative;
-  overflow: hidden;
-  border: 1px solid var(--linha-escura);
-  border-radius: var(--r-card);
-  background: var(--grafite);
-  transition:
-    border-color 0.4s ease,
-    transform 0.4s var(--ease);
+  isolation: isolate;
 }
-.tile-numero::before {
+.fundo-circuito::before {
   content: "";
   position: absolute;
   inset: 0;
+  z-index: -1;
   pointer-events: none;
-  background: radial-gradient(340px circle at var(--x, 50%) var(--y, 0%), rgba(247, 162, 27, 0.22), transparent 65%);
-  opacity: 0;
-  transition: opacity 0.4s ease;
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 19px,
+      rgba(28, 28, 28, 0.08) 19px,
+      rgba(28, 28, 28, 0.08) 20px,
+      transparent 20px,
+      transparent 39px,
+      rgba(28, 28, 28, 0.08) 39px,
+      rgba(28, 28, 28, 0.08) 40px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 19px,
+      rgba(28, 28, 28, 0.08) 19px,
+      rgba(28, 28, 28, 0.08) 20px,
+      transparent 20px,
+      transparent 39px,
+      rgba(28, 28, 28, 0.08) 39px,
+      rgba(28, 28, 28, 0.08) 40px
+    ),
+    radial-gradient(circle at 20px 20px, rgba(28, 28, 28, 0.12) 2px, transparent 2px),
+    radial-gradient(circle at 40px 40px, rgba(28, 28, 28, 0.12) 2px, transparent 2px);
+  background-size: 40px 40px;
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 18%, #000 82%, transparent);
+  mask-image: linear-gradient(to bottom, transparent, #000 18%, #000 82%, transparent);
 }
-.tile-numero:hover {
-  border-color: var(--sol);
+
+/* ---------- Texto Aurora (AuroraText) ----------
+   Degradê animado dentro das letras. Uma volta de 5s ao entrar na tela (começa quando o bloco deixa
+   de estar escondido pelo useEntrada); com movimento reduzido o tokens.css desliga a animação. */
+.aurora-texto {
+  color: var(--sol-texto); /* reserva se o navegador não suportar texto com degradê */
 }
-.tile-numero:hover::before {
-  opacity: 1;
-}
-@media (prefers-reduced-motion: no-preference) {
-  .tile-numero:hover {
-    transform: translateY(-4px);
+@supports ((-webkit-background-clip: text) or (background-clip: text)) {
+  .aurora-texto {
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    animation: aurora 5s ease-in-out 1 both;
   }
+}
+@keyframes aurora {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+[data-revelar-bloco][data-oculto="true"] .aurora-texto {
+  animation: none;
 }
 
 /* ---------- Revelar ao rolar (TextoRevelando, FrentesSection) ----------

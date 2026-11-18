@@ -65,31 +65,6 @@ export const IconeMobilidade = (p: SVGProps<SVGSVGElement>) => (
   </Icone>
 );
 
-// Ícones dos números da Home
-export const IconeObra = (p: SVGProps<SVGSVGElement>) => (
-  <Icone {...p}>
-    <path d="M4 20h16" />
-    <path d="M6 20V9l6-4 6 4v11" />
-    <path d="M10 20v-5h4v5" />
-  </Icone>
-);
-
-export const IconeEquipe = (p: SVGProps<SVGSVGElement>) => (
-  <Icone {...p}>
-    <circle cx="9" cy="8" r="3" />
-    <path d="M3.5 19c0-3 2.5-5 5.5-5s5.5 2 5.5 5" />
-    <circle cx="17" cy="9" r="2.4" />
-    <path d="M16 14.2c2.6.3 4.5 2 4.5 4.8" />
-  </Icone>
-);
-
-export const IconePino = (p: SVGProps<SVGSVGElement>) => (
-  <Icone {...p}>
-    <path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 1 1 13 0c0 5.4-6.5 11-6.5 11z" />
-    <circle cx="12" cy="10" r="2.4" />
-  </Icone>
-);
-
 // Raio: "usa no horário de ponta" (BessDiagram)
 export const IconeRaio = (p: SVGProps<SVGSVGElement>) => (
   <Icone {...p}>

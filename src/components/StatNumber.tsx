@@ -1,9 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { ehPlaceholder } from "../content/placeholders";
+import AuroraText from "./AuroraText";
 import { ChipProvisorio } from "./Chip";
 
 // Número grande com label e fonte.
-// - valor number  → conta de 0 até o valor em 1600ms, uma vez, ao entrar na tela
+// - valor number  → conta de 0 até o valor com efeito de MOLA (como o NumberTicker do Magic UI, mesmos
+//                   valores de rigidez e amortecimento): sobe rápido e assenta devagar. Uma vez, ao entrar
+//                   na tela. Termina em até ~4,5s para 1.300 (valores menores terminam antes).
 // - valor string  → mostra como está (ex.: o placeholder "[00]"), sem contagem
 // O valor final já está no HTML; a animação só melhora (e é pulada com movimento reduzido).
 
@@ -21,9 +24,13 @@ type Props = {
   onDark?: boolean;
   /** estado "dado em validação": mostra "—" e uma frase no lugar da fonte */
   emValidacao?: boolean;
+  /** rótulo com o efeito Aurora (degradê animado nas letras, cores da marca). Só para fundo claro */
+  aurora?: boolean;
 };
 
-const DURACAO_MS = 1600; // = --t-count em tokens.css
+// Mola do NumberTicker (Magic UI): damping 60, stiffness 100 (massa 1)
+const RIGIDEZ = 100;
+const AMORTECIMENTO = 60;
 
 function formatar(n: number, decimais: number, prefixo: string, sufixo: string): string {
   const texto = n.toLocaleString("pt-BR", {
@@ -42,6 +49,7 @@ export default function StatNumber({
   decimais = 0,
   onDark = false,
   emValidacao = false,
+  aurora = false,
 }: Props) {
   const raiz = useRef<HTMLDivElement>(null);
   // null = mostrar o valor final (é o que vai no HTML). Só vira texto durante a contagem.
@@ -62,17 +70,26 @@ export default function StatNumber({
         if (!entrada.isIntersecting) return;
         observador.disconnect(); // uma vez só
 
-        const inicio = performance.now();
+        // Mola amortecida puxando o número de 0 até `valor` (posição x, velocidade v)
+        let x = 0;
+        let v = 0;
+        let ultimo = performance.now();
+        const tolerancia = 0.5 / 10 ** decimais; // meio dígito: a partir daqui o número não muda mais
         const passo = (agora: number) => {
-          // o horário do quadro pode vir um pouco antes de `inicio`: trava entre 0 e 1 (sem "-0")
-          const t = Math.min(Math.max((agora - inicio) / DURACAO_MS, 0), 1);
-          const suave = 1 - Math.pow(1 - t, 3); // começa rápido, termina devagar
-          if (t < 1) {
-            setContagem(formatar(valor * suave, decimais, prefixo, sufixo));
-            quadro = requestAnimationFrame(passo);
-          } else {
-            setContagem(null); // terminou: volta ao valor final exato
+          const dt = Math.min(Math.max((agora - ultimo) / 1000, 0), 0.05); // trava no máx. 50ms
+          ultimo = agora;
+          const subpassos = Math.max(1, Math.ceil(dt * 240)); // integração estável (passos de ~4ms)
+          const h = dt / subpassos;
+          for (let i = 0; i < subpassos; i++) {
+            v += (-RIGIDEZ * (x - valor) - AMORTECIMENTO * v) * h;
+            x += v * h;
           }
+          if (Math.abs(x - valor) < tolerancia && Math.abs(v) < tolerancia * 4) {
+            setContagem(null); // assentou: volta ao valor final exato
+            return;
+          }
+          setContagem(formatar(Math.max(0, x), decimais, prefixo, sufixo));
+          quadro = requestAnimationFrame(passo);
         };
         quadro = requestAnimationFrame(passo);
       },
@@ -106,7 +123,7 @@ export default function StatNumber({
         <span className="sr-only">{final}</span>
       </p>
 
-      <p className={`mt-3 font-semibold ${corLabel}`}>{rotulo}</p>
+      <p className={`mt-3 font-semibold ${corLabel}`}>{aurora ? <AuroraText>{rotulo}</AuroraText> : rotulo}</p>
       {(emValidacao || fonte) && (
         <p className={`mt-1 text-sm ${corApoio}`}>{emValidacao ? "Dado em validação." : fonte}</p>
       )}
