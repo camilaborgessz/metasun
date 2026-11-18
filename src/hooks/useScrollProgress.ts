@@ -18,6 +18,8 @@ import { useEffect, type RefObject } from "react";
 //
 // Para ajustar: `ancora` é a altura da tela (0 a 1) em que a linha "está". 0.55 = um pouco abaixo
 // do meio. Menor = os passos acendem mais cedo; maior = mais tarde.
+// Se a página acaba antes de o último passo alcançar essa altura (seção no fim da página), a âncora
+// desce sozinha o suficiente para o último passo acender ao rolar até o fim.
 export function useScrollProgress(lista: RefObject<HTMLElement | null>, ancora = 0.55) {
   useEffect(() => {
     const raiz = lista.current;
@@ -31,7 +33,6 @@ export function useScrollProgress(lista: RefObject<HTMLElement | null>, ancora =
 
     const atualizar = () => {
       quadro = 0;
-      const alvo = window.innerHeight * ancora; // altura (em px da tela) onde a linha "está"
       const topoLista = raiz.getBoundingClientRect().top;
 
       // centro de cada bolinha, medido a partir do topo da lista
@@ -43,6 +44,13 @@ export function useScrollProgress(lista: RefObject<HTMLElement | null>, ancora =
       const primeiro = centros[0] ?? 0;
       const ultimo = centros[centros.length - 1] ?? 0;
       const trilhoAltura = Math.max(ultimo - primeiro, 1);
+
+      // altura (em px da tela) onde a linha "está". Se a página ACABA antes de o último passo chegar
+      // nessa altura (ex.: seção no fim da página, sem rodapé), a âncora desce o bastante para o último
+      // passo ser alcançado quando se rola até o fim: senão ele nunca acenderia.
+      const rolagemMax = document.documentElement.scrollHeight - window.innerHeight;
+      const ultimoNoDocumento = window.scrollY + topoLista + ultimo;
+      const alvo = Math.max(window.innerHeight * ancora, ultimoNoDocumento - rolagemMax + 2);
 
       if (trilho) {
         raiz.style.setProperty("--fim", `${trilhoAltura}px`);

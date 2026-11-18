@@ -1,8 +1,7 @@
-import { useRef, type ReactNode } from "react";
+import { useRef, type CSSProperties, type ReactNode } from "react";
 import { useEntrada } from "../hooks/useEntrada";
 import { useScrollProgress } from "../hooks/useScrollProgress";
 import AuroraText from "./AuroraText";
-import { IconeBess, IconeRaio, IconeSol } from "./icons";
 
 // Seção BESS em destaque: fundo azul-marinho (var(--marinho), PROVISÓRIO: HEX a confirmar) com o
 // fundo "circuito" escuro (.fundo-circuito-escuro, grade suave). Duas colunas no desktop: cabeçalho
@@ -16,42 +15,47 @@ import { IconeBess, IconeRaio, IconeSol } from "./icons";
 // Movimento: a faixa anda sem parar (pedido da Camila), pausa com o mouse em cima e fica parada com
 // movimento reduzido; a regra 7 pediria um botão de pausa.
 
-type Passo = { numero: string; titulo: string; texto: string; icone: ReactNode };
+type Passo = { numero: string; titulo: string; texto: string };
 
 const passos: Passo[] = [
   {
     numero: "01",
     titulo: "Gera",
     texto: "O sistema fotovoltaico (geração de energia a partir da luz do sol) produz energia durante o dia.",
-    icone: <IconeSol />,
   },
   {
     numero: "02",
     titulo: "Guarda",
     texto: "As baterias armazenam o que a sua empresa não está usando naquele momento.",
-    icone: <IconeBess />,
   },
   {
     numero: "03",
     titulo: "Usa no horário de ponta",
     texto: "Quando a tarifa sobe, a empresa usa a energia guardada em vez de comprar da rede.",
-    icone: <IconeRaio />,
   },
 ];
+
+// Palavra grifada (marca-texto) no parágrafo de explicação. `atraso` escalona o desenho do grifo.
+function Grifo({ children, atraso }: { children: ReactNode; atraso: number }) {
+  return (
+    <mark className="grifo" style={{ "--d": `${atraso}ms` } as CSSProperties}>
+      {children}
+    </mark>
+  );
+}
 
 // Aurora para FUNDO ESCURO: Sol, âmbar claro e branco (todas passam de 7:1 sobre o azul-marinho)
 const AURORA_NO_ESCURO = ["#F7A21B", "#FFD27A", "#FFFFFF", "#F7A21B"];
 
 const SELO = "Pioneira em BESS na Região Norte";
 
-// A mesma frase repetida, com um ponto Sol entre as cópias. Duas cópias do grupo formam o trilho.
+// A mesma frase repetida, só com espaço entre as cópias (sem ponto). Dois grupos formam o trilho.
 function GrupoDaFaixa() {
   return (
     <div className="flex shrink-0 items-center">
       {[0, 1, 2, 3].map((n) => (
         <span key={n} className="flex items-center">
-          <span className="t-label whitespace-nowrap text-sol">{SELO}</span>
-          <span aria-hidden="true" className="mx-8 size-1.5 rounded-full bg-sol/60" />
+          <span className="t-label mr-16 whitespace-nowrap text-sol">{SELO}</span>
         </span>
       ))}
     </div>
@@ -65,6 +69,10 @@ export default function BessSection() {
   // O Aurora do título só começa a dar a volta quando o título aparece na tela
   const titulo = useRef<HTMLHeadingElement>(null);
   useEntrada(titulo, 0.5);
+
+  // Os grifos do parágrafo se desenham quando ele aparece na tela
+  const explicacao = useRef<HTMLParagraphElement>(null);
+  useEntrada(explicacao, 0.4);
 
   return (
     <section
@@ -95,11 +103,19 @@ export default function BessSection() {
             na hora em que ela fica mais cara?
           </h2>
 
-          <p className="mt-5 max-w-[56ch] text-base leading-relaxed text-branco/80 min-[1200px]:text-[17px]">
-            O BESS é o sistema de armazenamento de energia em baterias. Ele guarda a energia que sobra
-            durante o dia e a devolve no horário de ponta, o período de maior tarifa para empresas do
-            grupo A. Assim, a sua empresa depende menos da rede nos momentos mais caros, mantém a
-            demanda sob controle e continua operando mesmo quando a rede falha.
+          {/* Palavras mais importantes grifadas como marca-texto (<mark>) */}
+          <p
+            ref={explicacao}
+            data-revelar-bloco
+            className="mt-5 max-w-[56ch] text-base leading-[1.9] text-branco/80 min-[1200px]:text-[17px]"
+          >
+            O BESS é o sistema de{" "}
+            <Grifo atraso={0}>armazenamento de energia em baterias</Grifo>. Ele guarda a energia que sobra
+            durante o dia e a devolve no <Grifo atraso={350}>horário de ponta</Grifo>, o período de maior
+            tarifa para empresas do grupo A. Assim, a sua empresa{" "}
+            <Grifo atraso={700}>depende menos da rede</Grifo> nos momentos mais caros, mantém a{" "}
+            <Grifo atraso={1050}>demanda sob controle</Grifo> e{" "}
+            <Grifo atraso={1400}>continua operando mesmo quando a rede falha</Grifo>.
           </p>
 
           {/* Faixa que passa: a frase se repete, transparente nas pontas e clara no meio */}
@@ -126,14 +142,9 @@ export default function BessSection() {
                 <span aria-hidden="true" data-ponto className="timeline-ponto" />
 
                 <div className="timeline-cartao rounded-card bg-branco/[.06] p-6">
-                  <div className="flex items-start justify-between gap-4">
-                    <span className="text-[clamp(40px,4.5vw,56px)] font-bold leading-none tabular-nums text-sol">
-                      {p.numero}
-                    </span>
-                    <span aria-hidden="true" className="size-8 shrink-0 text-sol [&>svg]:size-full">
-                      {p.icone}
-                    </span>
-                  </div>
+                  <span className="block text-[clamp(40px,4.5vw,56px)] font-bold leading-none tabular-nums text-sol">
+                    {p.numero}
+                  </span>
                   <h3 className="t-h3 mt-6 uppercase tracking-wide">{p.titulo}</h3>
                   <p className="mt-2 text-branco/80">{p.texto}</p>
                 </div>
