@@ -86,125 +86,60 @@
   }
 }
 
-/* ---------- Botão com borda em gradiente (BotaoBordaGradiente) ----------
-   Adaptado do "Hover Border Gradient" (Aceternity UI), só com CSS. A borda e o brilho são LARANJA
-   (destaque); o miolo (a "face") muda de cor pela prop face: branco | grafite | sol.
-   Em repouso: borda laranja, halo suave e um brilho que dá uma volta pela borda (posição em
-   --bx/--by, trocada pelo React). Hover/foco: a borda fica laranja sólida e acende por inteiro.
-   Sem box-shadow. Com movimento reduzido o tokens.css desliga as transições. */
-@property --bx {
-  syntax: "<percentage>";
-  inherits: false;
-  initial-value: 50%;
-}
-@property --by {
-  syntax: "<percentage>";
-  inherits: false;
-  initial-value: 0%;
-}
-.borda-botao {
-  --anel: 3px; /* espessura da borda laranja */
-  --face-bg: #fff;
-  --face-fg: var(--grafite);
-  --face-hover: var(--areia);
-  --face-ativo: var(--linha);
+/* ---------- Botão com preenchimento (BotaoPreenche) ----------
+   Adaptado de Uiverse.io (xueyuantan). No hover/foco um degradê laranja varre o botão da esquerda
+   para a direita e o texto passa de branco para grafite. Em repouso: miolo grafite, texto branco e
+   borda laranja de 2px. Mudanças em relação ao original: sem box-shadow (elevação é plana; a
+   borda laranja faz o destaque) e cores da Meta Sun no lugar do verde/amarelo.
+   Com movimento reduzido o tokens.css desliga a transição: o estado final aparece direto. */
+.btn-varredura {
   position: relative;
+  z-index: 1;
   display: inline-flex;
-  padding: var(--anel);
-  border-radius: 999px;
-  background: rgba(247, 162, 27, 0.55);
-  transition: background-color 0.4s ease;
-}
-.borda-botao[data-face="grafite"] {
-  --face-bg: var(--grafite);
-  --face-fg: #fff;
-  --face-hover: #333;
-  --face-ativo: #000;
-}
-.borda-botao[data-face="sol"] {
-  --face-bg: var(--sol);
-  --face-fg: var(--grafite);
-  --face-hover: var(--sol-hover);
-  --face-ativo: var(--sol-ativo);
-}
-.borda-botao:hover,
-.borda-botao:focus-visible {
-  background: var(--sol);
-}
-/* halo laranja suave em volta do botão (em repouso) */
-.borda-botao::before {
-  content: "";
-  position: absolute;
-  inset: -2px;
-  z-index: 0;
-  border-radius: inherit;
-  background: rgba(247, 162, 27, 0.4);
-  filter: blur(10px);
-  pointer-events: none;
-  transition: background-color 0.4s ease;
-}
-.borda-botao:hover::before,
-.borda-botao:focus-visible::before {
-  background: rgba(247, 162, 27, 0.65);
-}
-.borda-face {
-  position: relative;
-  z-index: 10;
-  display: flex;
   align-items: center;
   justify-content: center;
   gap: 12px;
-  width: 100%;
-  min-height: 52px;
+  min-height: 58px;
   padding: 0 32px;
-  border-radius: inherit;
-  background: var(--face-bg);
-  color: var(--face-fg);
+  border: 2px solid var(--sol);
+  border-radius: 999px;
+  background: var(--grafite);
+  color: #fff;
   font-size: 16px;
   font-weight: 700;
   white-space: nowrap;
-  transition: background-color 0.3s ease;
+  overflow: hidden;
+  transition:
+    color 0.5s ease,
+    scale 0.2s ease;
 }
-.borda-botao[data-tamanho="compacto"] .borda-face {
-  min-height: 42px;
+.btn-varredura[data-tamanho="compacto"] {
+  min-height: 48px;
   padding: 0 24px;
   font-size: 15px;
 }
-.borda-botao:hover .borda-face,
-.borda-botao:focus-visible .borda-face {
-  background: var(--face-hover);
-}
-.borda-botao:active .borda-face {
-  background: var(--face-ativo);
-}
-.borda-luz,
-.borda-acesa {
+.btn-varredura::before {
+  content: "";
   position: absolute;
-  inset: -4px;
-  z-index: 0;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  z-index: -1;
   border-radius: inherit;
-  filter: blur(5px);
-  pointer-events: none;
+  background-image: linear-gradient(to right, var(--sol) 0%, #ffd27a 100%);
+  transition: width 0.5s ease;
 }
-.borda-luz {
-  background: radial-gradient(24% 55% at var(--bx) var(--by), #ffb020 0%, rgba(247, 162, 27, 0) 100%);
-  transition:
-    --bx 1s linear,
-    --by 1s linear,
-    opacity 0.6s linear;
+.btn-varredura:hover,
+.btn-varredura:focus-visible {
+  color: var(--grafite);
 }
-.borda-acesa {
-  background: radial-gradient(75% 181% at 50% 50%, var(--sol) 0%, rgba(247, 162, 27, 0) 100%);
-  opacity: 0;
-  transition: opacity 0.6s linear;
+.btn-varredura:hover::before,
+.btn-varredura:focus-visible::before {
+  width: 100%;
 }
-.borda-botao:hover .borda-luz,
-.borda-botao:focus-visible .borda-luz {
-  opacity: 0;
-}
-.borda-botao:hover .borda-acesa,
-.borda-botao:focus-visible .borda-acesa {
-  opacity: 1;
+.btn-varredura:active {
+  scale: 0.97;
 }
 
 /* Vidro. Sem suporte a backdrop-filter o fundo fica mais opaco para o texto continuar legível. */

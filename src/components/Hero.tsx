@@ -1,5 +1,5 @@
 import { cta } from "../content/navegacao";
-import BotaoBordaGradiente from "./BotaoBordaGradiente";
+import BotaoPreenche from "./BotaoPreenche";
 import CanvasText from "./CanvasText";
 
 // Hero A (imersiva escura): foto em cover dentro de um cartão com moldura areia.
@@ -51,11 +51,9 @@ export default function Hero() {
             Fazemos o estudo do consumo da sua empresa e apresentamos a economia estimada.
           </p>
 
-          {/* Um botão só. Borda e brilho laranja, miolo grafite (face="branco" ou "sol" para testar). */}
+          {/* Um botão só: miolo grafite com borda laranja; no hover um degradê laranja o preenche. */}
           <div className="mt-2 flex w-full flex-col min-[900px]:w-auto">
-            <BotaoBordaGradiente href={cta.href} face="grafite">
-              {cta.rotulo}
-            </BotaoBordaGradiente>
+            <BotaoPreenche href={cta.href}>{cta.rotulo}</BotaoPreenche>
           </div>
         </div>
       </div>

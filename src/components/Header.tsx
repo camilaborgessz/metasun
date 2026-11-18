@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { cta, navItens } from "../content/navegacao";
-import BotaoBordaGradiente from "./BotaoBordaGradiente";
+import BotaoPreenche from "./BotaoPreenche";
 import Button from "./Button";
 import { IconeFechar, IconeMenu } from "./icons";
 import Logo from "./Logo";
@@ -102,11 +102,11 @@ export default function Header({ onDark = false, sobreFoto = false }: Props) {
 
             <div className="ml-auto flex items-center gap-3 menu:ml-0">
               {/* O CTA só aparece a partir de 640px; abaixo disso vai para a barra da base.
-                  Miolo grafite e borda laranja nos dois estados (igual ao botão do Hero). */}
+                  Miolo grafite com borda laranja nos dois estados (igual ao botão do Hero). */}
               <div className="hidden sm:block">
-                <BotaoBordaGradiente href={cta.href} face="grafite" tamanho="compacto" seta={false}>
+                <BotaoPreenche href={cta.href} tamanho="compacto" seta={false}>
                   {cta.rotulo}
-                </BotaoBordaGradiente>
+                </BotaoPreenche>
               </div>
 
               <button
