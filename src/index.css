@@ -95,9 +95,11 @@
    Com movimento reduzido o tokens.css desliga a transição: o estado final aparece direto. */
 .btn-varredura {
   /* versão padrão: miolo branco (para fundo escuro). data-face="grafite" é a versão escura. */
-  --bg: #fff;
+  --bg: rgba(255, 255, 255, 0.78); /* branco um pouco transparente (a foto aparece por trás) */
   --fg: var(--grafite);
-  --borda: #e3dfd6;
+  --borda: rgba(255, 255, 255, 0.6);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
   position: relative;
   z-index: 1;
   display: inline-flex;
@@ -152,6 +154,20 @@
 }
 .btn-varredura:active {
   scale: 0.97;
+}
+
+/* ---------- Como funciona (ComoFunciona) ----------
+   Entrada dos slides: o React marca data-oculto nos slides abaixo da dobra (só sem movimento
+   reduzido) e tira a marca quando eles entram na tela: fade + 24px em 0,6s, uma vez.
+   Sem JS ou com movimento reduzido nada é escondido (o conteúdo final já está no HTML). */
+.passo-revelar {
+  transition:
+    opacity 0.6s ease,
+    transform 0.6s ease;
+}
+.passo-revelar[data-oculto="true"] {
+  opacity: 0;
+  transform: translateY(24px);
 }
 
 /* Vidro. Sem suporte a backdrop-filter o fundo fica mais opaco para o texto continuar legível. */

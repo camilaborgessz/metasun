@@ -1,5 +1,5 @@
 import BessSection from "../components/BessSection";
-import ComoFuncionaSection from "../components/ComoFuncionaSection";
+import ComoFunciona from "../components/ComoFunciona";
 import Footer from "../components/Footer";
 import FrentesSection from "../components/FrentesSection";
 import Header from "../components/Header";
@@ -24,7 +24,7 @@ export default function Home() {
         <Hero />
         <NumerosSection />
         <FrentesSection />
-        <ComoFuncionaSection />
+        <ComoFunciona />
         <BessSection />
       </main>
 
