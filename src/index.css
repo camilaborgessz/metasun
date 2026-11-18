@@ -156,6 +156,37 @@
   scale: 0.97;
 }
 
+/* ---------- Revelar ao rolar (TextoRevelando, FrentesSection) ----------
+   O hook useEntrada marca data-oculto="true" em quem está abaixo da dobra (só sem movimento
+   reduzido) e tira a marca quando entra na tela: aí cada letra sobe e aparece, em sequência
+   (--d = atraso de cada letra), e o filete se desenha. Sem JS ou sem movimento: tudo já visível. */
+.revelar-letra {
+  display: inline-block;
+  transition:
+    opacity 0.5s ease var(--d, 0ms),
+    transform 0.6s var(--ease) var(--d, 0ms);
+}
+[data-revelar-texto][data-oculto="true"] .revelar-letra {
+  opacity: 0;
+  transform: translateY(0.55em);
+}
+.revelar-linha {
+  transform-origin: left;
+  transition: transform 0.9s var(--ease);
+}
+.revelar-bloco {
+  transition:
+    opacity 0.6s ease var(--d, 0ms),
+    transform 0.6s var(--ease) var(--d, 0ms);
+}
+[data-revelar-bloco][data-oculto="true"] .revelar-linha {
+  transform: scaleX(0);
+}
+[data-revelar-bloco][data-oculto="true"] .revelar-bloco {
+  opacity: 0;
+  transform: translateY(12px);
+}
+
 /* ---------- Como funciona (ComoFunciona) ----------
    Entrada dos slides: o React marca data-oculto nos slides abaixo da dobra (só sem movimento
    reduzido) e tira a marca quando eles entram na tela: fade + 24px em 0,6s, uma vez.
