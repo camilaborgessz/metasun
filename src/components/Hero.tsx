@@ -51,9 +51,9 @@ export default function Hero() {
             Fazemos o estudo do consumo da sua empresa e apresentamos a economia estimada.
           </p>
 
-          {/* Um botão só. Borda e brilho laranja, miolo branco (face="grafite" ou "sol" para testar). */}
+          {/* Um botão só. Borda e brilho laranja, miolo grafite (face="branco" ou "sol" para testar). */}
           <div className="mt-2 flex w-full flex-col min-[900px]:w-auto">
-            <BotaoBordaGradiente href={cta.href} face="branco">
+            <BotaoBordaGradiente href={cta.href} face="grafite">
               {cta.rotulo}
             </BotaoBordaGradiente>
           </div>

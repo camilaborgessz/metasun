@@ -102,14 +102,9 @@ export default function Header({ onDark = false, sobreFoto = false }: Props) {
 
             <div className="ml-auto flex items-center gap-3 menu:ml-0">
               {/* O CTA só aparece a partir de 640px; abaixo disso vai para a barra da base.
-                  Sobre a foto escura o miolo é branco; na barra branca, grafite. Borda laranja. */}
+                  Miolo grafite e borda laranja nos dois estados (igual ao botão do Hero). */}
               <div className="hidden sm:block">
-                <BotaoBordaGradiente
-                  href={cta.href}
-                  face={escuro ? "branco" : "grafite"}
-                  tamanho="compacto"
-                  seta={false}
-                >
+                <BotaoBordaGradiente href={cta.href} face="grafite" tamanho="compacto" seta={false}>
                   {cta.rotulo}
                 </BotaoBordaGradiente>
               </div>
