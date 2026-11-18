@@ -8,8 +8,9 @@ import { ChipProvisorio } from "./Chip";
 // foto, parallax na foto, entrada com fade e botão com "label roll". Textos, fotos e cores são da Meta Sun.
 //
 // Adaptações às regras do projeto (CLAUDE.md):
-// - raios dos tokens (card 12, campo 6, botão 8) em vez dos 35/28px do original; peso 600 no lugar
-//   do 500 (a fonte só carrega 400/600/700);
+// - raios como na referência (card 35px, foto 28px, itens e botão em pílula): EXCEÇÃO só desta seção,
+//   pedida pela Camila (o resto do site segue 6/8/12); peso 600 no lugar do 500 (a fonte só carrega
+//   400/600/700);
 // - cores: areia (fundo), branco (card), linha (pílula ativa e botão), grafite (texto) e Sol só em detalhes;
 // - fotos: ainda não existem, então entram placeholders hachurados com o chip "provisório";
 // - movimento: parallax e entrada só sem prefers-reduced-motion e só no desktop (parallax).
@@ -86,7 +87,7 @@ function BotaoRolar({ href, children }: { href: string; children: string }) {
   return (
     <a
       href={href}
-      className="group inline-flex min-h-11 items-center self-start rounded-botao bg-linha/[.64] px-[18px] text-sm font-semibold text-grafite transition-colors duration-300 hover:bg-linha"
+      className="group inline-flex min-h-11 items-center self-start rounded-full bg-linha/[.64] px-[18px] text-sm font-semibold text-grafite transition-colors duration-300 hover:bg-linha"
     >
       <span className="relative block overflow-hidden leading-[22px]">
         <span className={roda}>{children}</span>
@@ -205,39 +206,44 @@ export default function ComoFunciona() {
 
   return (
     <section id="como-funciona" aria-labelledby="titulo-como-funciona" className="bg-areia py-[var(--section-y)]">
-      <div className="container-meta">
+      {/* margem lateral de 28px e largura de até 1240px, como na referência (o resto do site usa o container de 1120px) */}
+      <div className="mx-auto w-[min(100%-40px,1240px)] min-[640px]:w-[min(100%-56px,1240px)]">
         <h2
           id="titulo-como-funciona"
-          className="text-[clamp(28px,4.2vw,42px)] font-semibold leading-[1.12] tracking-[-0.015em] text-grafite"
+          className="text-[clamp(28px,4.2vw,42px)] font-semibold leading-[1.1] tracking-[-0.03em] text-grafite"
         >
           Como a Meta Sun trabalha
           {/* segunda linha em cor apagada (fácil de editar) */}
-          <span className="block text-grafite/60">da análise ao pós-venda</span>
+          <span className="block text-grafite/55">da análise ao pós-venda</span>
         </h2>
 
-        <div className="mt-12 grid gap-y-2 min-[992px]:grid-cols-[minmax(200px,260px)_1fr] min-[992px]:gap-x-[42px]">
+        {/* menu de 259px + 42px de vão + card (1fr), como na referência */}
+        <div className="mt-14 grid gap-y-2 min-[992px]:grid-cols-[259px_minmax(0,1fr)] min-[992px]:gap-x-[42px]">
           {/* Menu: lateral e sticky no desktop; barra horizontal de itens com scroll lateral no celular */}
           <nav
             aria-label="Etapas"
-            className="z-30 -mx-[var(--gutter)] bg-areia px-[var(--gutter)] py-2 max-[991px]:sticky max-[991px]:top-[72px] min-[992px]:sticky min-[992px]:top-[105px] min-[992px]:mx-0 min-[992px]:self-start min-[992px]:bg-transparent min-[992px]:p-0"
+            className="z-30 -mx-[var(--gutter)] bg-areia px-[var(--gutter)] py-2 max-[991px]:sticky max-[991px]:top-[84px] min-[992px]:sticky min-[992px]:top-[105px] min-[992px]:mx-0 min-[992px]:self-start min-[992px]:bg-transparent min-[992px]:p-0"
           >
             <ol
               ref={listaRef}
-              className="relative flex gap-2 overflow-x-auto [scrollbar-width:none] min-[992px]:flex-col min-[992px]:gap-1 min-[992px]:overflow-visible"
+              className="relative flex gap-2 overflow-x-auto [scrollbar-width:none] min-[992px]:flex-col min-[992px]:gap-[3px] min-[992px]:overflow-visible"
             >
               {steps.map((e, i) => (
                 <li key={e.numero} className="shrink-0">
                   <a
                     href={`#step-${i + 1}`}
                     aria-current={ativo === i ? "step" : undefined}
-                    className={`flex items-center gap-3.5 whitespace-nowrap rounded-botao px-5 py-3.5 text-sm font-semibold transition-colors duration-500 ${
-                      ativo === i ? "bg-linha text-grafite" : "text-cinza-texto hover:text-grafite"
+                    className={`relative flex items-center gap-3.5 whitespace-nowrap rounded-full px-[21px] py-3.5 text-sm font-semibold leading-[21.5px] transition-colors duration-500 ${
+                      ativo === i
+                        ? "bg-linha text-grafite" /* ativo: neutro mais forte, texto cheio */
+                        : "text-cinza-texto hover:bg-linha/50 hover:text-grafite" /* inativo: transparente; hover: neutro suave */
                     }`}
                   >
-                    {/* ponto Sol: marca o item ativo (detalhe de destaque) */}
+                    {/* ponto Sol: marca o item ativo (detalhe de destaque). Fica fora do fluxo para o
+                        texto continuar no mesmo lugar da referência (número em x=21px, nome em x=51px). */}
                     <span
                       aria-hidden="true"
-                      className={`size-1.5 shrink-0 rounded-full transition-colors duration-500 ${
+                      className={`absolute left-2.5 top-1/2 size-1.5 -translate-y-1/2 rounded-full transition-colors duration-500 ${
                         ativo === i ? "bg-sol" : "bg-transparent"
                       }`}
                     />
@@ -249,8 +255,9 @@ export default function ComoFunciona() {
             </ol>
           </nav>
 
-          {/* Pilha de slides */}
-          <div>
+          {/* Pilha de slides. A margem negativa (-56px) compensa o padding-top do 1º slide e faz o
+              primeiro card alinhar com o topo do menu (desktop). */}
+          <div className="min-[992px]:-mt-14">
             {steps.map((e, i) => (
               <article
                 key={e.numero}
@@ -262,14 +269,16 @@ export default function ComoFunciona() {
                 }}
                 className="passo-revelar pt-8 max-[991px]:scroll-mt-12 min-[992px]:pt-14"
               >
-                <div className="grid gap-1.5 rounded-card bg-branco p-1.5 min-[992px]:grid-cols-[3fr_2fr]">
-                  {/* mídia: overflow escondido para o parallax; no celular a foto fica em cima (4/3) */}
-                  <div className="relative aspect-[4/3] overflow-hidden rounded-campo min-[992px]:aspect-auto min-[992px]:min-h-[511px]">
+                {/* card: padding e vão de 7px, ~600px de altura no desktop (foto 586px + 2×7) */}
+                <div className="grid gap-[7px] rounded-[28px] bg-branco p-[7px] min-[992px]:grid-cols-[3fr_2fr] min-[992px]:rounded-[35px]">
+                  {/* mídia: ~60% da largura, encosta nas bordas do card (raio 28px, um pouco menor que o
+                      do card); overflow escondido para o parallax; no celular a foto fica em cima (4/3) */}
+                  <div className="relative aspect-[4/3] overflow-hidden rounded-[22px] min-[992px]:aspect-auto min-[992px]:min-h-[586px] min-[992px]:rounded-[28px]">
                     <div
                       ref={(el) => {
                         midias.current[i] = el;
                       }}
-                      className="absolute inset-0 will-change-transform"
+                      className="absolute inset-0 will-change-transform min-[992px]:motion-safe:scale-[1.08]"
                     >
                       {e.imagem ? (
                         <img
@@ -289,16 +298,17 @@ export default function ComoFunciona() {
                   {/* conteúdo: texto no topo, botão no fundo */}
                   <div className="flex flex-col justify-between gap-10 p-6 min-[992px]:p-7">
                     <div>
-                      <p className="text-[clamp(20px,2vw,24.5px)] font-semibold leading-tight text-grafite/60">
+                      {/* "Etapa 01" e o título bem juntos, no topo */}
+                      <p className="text-[clamp(20px,2vw,24.5px)] font-semibold leading-[1.1] tracking-[-0.02em] text-grafite/55">
                         Etapa {e.numero}
                       </p>
                       <h3
                         id={`step-${i + 1}-titulo`}
-                        className="text-[clamp(20px,2vw,24.5px)] font-semibold leading-tight text-grafite"
+                        className="text-[clamp(20px,2vw,24.5px)] font-semibold leading-[1.1] tracking-[-0.02em] text-grafite"
                       >
                         {e.nome}
                       </h3>
-                      <p className="mt-4 text-sm leading-[21px] text-cinza-texto">{e.texto}</p>
+                      <p className="mt-[22px] text-sm leading-[21px] text-cinza-texto">{e.texto}</p>
                     </div>
                     {e.botao && <BotaoRolar href={LINK_CONTATO}>Solicitar proposta</BotaoRolar>}
                   </div>

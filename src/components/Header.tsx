@@ -5,17 +5,18 @@ import Button from "./Button";
 import { IconeFechar, IconeMenu } from "./icons";
 import Logo from "./Logo";
 
-// Header sticky. UM layout só, em qualquer estado: logo · nav · CTA (e botão de menu no celular).
-//   ≥900px: logo, nav e CTA em linha · <900px: a nav vira menu · <640px: CTA vai para a barra da base.
-// O que muda entre os estados é só a cor:
-//   - sobreFoto (Home) no topo: transparente por cima da foto do Hero, texto e logo brancos
-//   - rolado (mais de 8px) ou nas outras páginas: barra branca (64px rolada) com filete, texto grafite
-// A altura vai de 80px para 64px ao rolar. Os itens da nav e o CTA são os mesmos nos dois estados.
+// Header sticky em PÍLULA de vidro (inspirado no site de referência da Camila): logo, nav e CTA
+// dentro de uma barra arredondada com desfoque, a 16px do topo. O layout é o mesmo em qualquer estado;
+// só muda a cor:
+//   - sobreFoto (Home) no topo: pílula escura translúcida por cima da foto, texto e logo brancos
+//   - rolado (mais de 8px) ou nas outras páginas: pílula areia translúcida, texto grafite
+//   ≥900px: logo, nav (à esquerda) e CTA (à direita) · <900px: a nav vira menu · <640px: CTA vai para a barra da base.
+// A pílula vale como exceção de forma (como o Hero): o resto do site segue os raios 6, 8 e 12.
 
 type Props = {
   /** variante sobre fundo escuro (grafite) */
   onDark?: boolean;
-  /** Home: transparente por cima da foto do Hero até rolar */
+  /** Home: por cima da foto do Hero até rolar */
   sobreFoto?: boolean;
 };
 
@@ -24,7 +25,6 @@ export default function Header({ onDark = false, sobreFoto = false }: Props) {
   const [menuAberto, setMenuAberto] = useState(false);
   const botaoMenu = useRef<HTMLButtonElement>(null);
 
-  // Encolhe o header (80 → 64px) depois de rolar um pouco
   useEffect(() => {
     const aoRolar = () => setRolado(window.scrollY > 8);
     window.addEventListener("scroll", aoRolar, { passive: true });
@@ -47,19 +47,21 @@ export default function Header({ onDark = false, sobreFoto = false }: Props) {
   const transparente = sobreFoto && !rolado;
   const escuro = onDark || transparente; // texto e logo claros
 
-  const fundo = transparente
-    ? "bg-transparent text-branco"
+  const pilula = transparente
+    ? "border-branco/20 bg-grafite/45 text-branco"
     : onDark
-      ? "bg-grafite text-branco"
-      : "bg-branco text-grafite";
-  const filete = rolado ? (onDark ? "border-linha-escura" : "border-linha") : "border-transparent";
-  const hoverIcone = escuro ? "hover:bg-branco/15" : "hover:bg-areia";
+      ? "border-linha-escura bg-grafite/90 text-branco"
+      : "border-linha bg-linha/80 text-grafite";
+  const hoverItem = escuro ? "hover:bg-branco/15 focus-visible:bg-branco/15" : "hover:bg-branco/60 focus-visible:bg-branco/60";
+  const hoverIcone = escuro ? "hover:bg-branco/15" : "hover:bg-branco/60";
   const listaMobile = transparente
-    ? "vidro-menu border-branco/30 text-branco"
-    : `${fundo} ${onDark ? "border-linha-escura" : "border-linha"}`;
+    ? "border-branco/20 bg-grafite/90 text-branco backdrop-blur-md"
+    : onDark
+      ? "border-linha-escura bg-grafite text-branco"
+      : "border-linha bg-areia text-grafite";
 
-  // Por cima da foto, a barra desce para dentro do cartão (moldura areia de 12px/20px + folga)
-  const posicao = transparente ? "translate-y-5 min-[900px]:translate-y-9" : "translate-y-0";
+  // Por cima da foto a pílula desce para dentro do cartão do Hero (moldura areia de 12px/20px)
+  const posicao = transparente ? "translate-y-3 min-[900px]:translate-y-5" : "translate-y-0";
 
   return (
     <>
@@ -69,57 +71,61 @@ export default function Header({ onDark = false, sobreFoto = false }: Props) {
         data-tema={escuro ? "escuro" : undefined}
         className={`pointer-events-none sticky top-0 z-40 ${sobreFoto ? "h-0" : "h-20"}`}
       >
-        <div
-          className={`pointer-events-auto relative border-b transition-[height,transform] duration-[250ms] ${fundo} ${filete} ${posicao} ${
-            rolado ? "h-16" : "h-20"
-          }`}
-        >
-          <div className="container-meta flex h-full items-center gap-4 lg:gap-6">
-            <a href="/" aria-label="Meta Sun, página inicial" className="shrink-0 rounded-botao">
-              {/* 56px no topo, 44px com o header rolado (64px). Fundo escuro: letras brancas. */}
-              <Logo negativo={escuro} className={rolado ? "h-11" : "h-14"} />
-            </a>
+        <div className={`pointer-events-auto relative pt-4 transition-transform duration-[250ms] ${posicao}`}>
+          <div className="container-meta">
+            <div
+              className={`relative flex h-14 items-center gap-3 rounded-full border pl-5 pr-2 backdrop-blur-md transition-colors duration-300 ${pilula}`}
+            >
+              <a href="/" aria-label="Meta Sun, página inicial" className="shrink-0 rounded-botao">
+                <Logo negativo={escuro} className="h-9" />
+              </a>
 
-            <nav aria-label="Principal" className="menu:flex-1">
-              {/* Celular: lista que abre abaixo do header. Desktop: linha. */}
-              <ul
-                id="menu-principal"
-                className={`${menuAberto ? "block" : "hidden"} absolute inset-x-0 top-full border-b px-[var(--gutter)] pb-3 ${listaMobile} menu:static menu:flex menu:justify-center menu:gap-3 menu:border-0 menu:bg-transparent menu:p-0 lg:gap-7`}
-              >
-                {navItens.map((item) => (
-                  <li key={item.href}>
-                    <a
-                      href={item.href}
-                      onClick={() => setMenuAberto(false)}
-                      className="inline-flex min-h-12 w-full items-center whitespace-nowrap rounded-campo text-sm font-semibold underline decoration-transparent decoration-2 underline-offset-8 transition-[text-decoration-color] duration-150 hover:decoration-sol menu:min-h-11 menu:w-auto"
-                    >
-                      {item.rotulo}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </nav>
+              <nav aria-label="Principal" className="menu:ml-4 menu:flex-1">
+                {/* Celular: lista que abre abaixo da pílula. Desktop: linha, alinhada à esquerda. */}
+                <ul
+                  id="menu-principal"
+                  className={`${menuAberto ? "block" : "hidden"} absolute inset-x-0 top-full mt-2 rounded-3xl border p-2 ${listaMobile} menu:static menu:mt-0 menu:flex menu:justify-start menu:gap-1 menu:rounded-none menu:border-0 menu:bg-transparent menu:p-0 menu:backdrop-blur-none`}
+                >
+                  {navItens.map((item) => (
+                    <li key={item.href}>
+                      <a
+                        href={item.href}
+                        onClick={() => setMenuAberto(false)}
+                        className={`inline-flex min-h-12 w-full items-center whitespace-nowrap rounded-full px-4 text-sm font-semibold transition-colors duration-200 menu:min-h-10 menu:w-auto ${hoverItem}`}
+                      >
+                        {item.rotulo}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
 
-            <div className="ml-auto flex items-center gap-3 menu:ml-0">
-              {/* O CTA só aparece a partir de 640px; abaixo disso vai para a barra da base.
-                  Miolo branco sobre a foto escura (igual ao botão do Hero) e grafite na barra branca. */}
-              <div className="hidden sm:block">
-                <BotaoPreenche href={cta.href} face={escuro ? "branco" : "grafite"} tamanho="compacto" seta={false}>
-                  {cta.rotulo}
-                </BotaoPreenche>
+              <div className="ml-auto flex items-center gap-2 menu:ml-0">
+                {/* O CTA só aparece a partir de 640px; abaixo disso vai para a barra da base.
+                    Miolo branco translúcido sobre a foto e grafite na pílula clara. */}
+                <div className="hidden sm:block">
+                  <BotaoPreenche
+                    href={cta.href}
+                    face={escuro ? "branco" : "grafite"}
+                    tamanho="compacto"
+                    seta={false}
+                  >
+                    {cta.rotulo}
+                  </BotaoPreenche>
+                </div>
+
+                <button
+                  ref={botaoMenu}
+                  type="button"
+                  aria-expanded={menuAberto}
+                  aria-controls="menu-principal"
+                  aria-label={menuAberto ? "Fechar menu" : "Abrir menu"}
+                  onClick={() => setMenuAberto((aberto) => !aberto)}
+                  className={`inline-flex size-11 items-center justify-center rounded-full transition-colors duration-150 menu:hidden ${hoverIcone}`}
+                >
+                  {menuAberto ? <IconeFechar /> : <IconeMenu />}
+                </button>
               </div>
-
-              <button
-                ref={botaoMenu}
-                type="button"
-                aria-expanded={menuAberto}
-                aria-controls="menu-principal"
-                aria-label={menuAberto ? "Fechar menu" : "Abrir menu"}
-                onClick={() => setMenuAberto((aberto) => !aberto)}
-                className={`inline-flex size-12 items-center justify-center rounded-botao transition-colors duration-150 menu:hidden ${hoverIcone}`}
-              >
-                {menuAberto ? <IconeFechar /> : <IconeMenu />}
-              </button>
             </div>
           </div>
         </div>
