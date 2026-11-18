@@ -51,11 +51,13 @@ export default function CanvasText({
     const el = textoRef.current;
     if (!el) return;
     const medir = () => {
-      const caixa = el.getBoundingClientRect();
       const css = window.getComputedStyle(el);
+      // offsetWidth/offsetHeight = tamanho do layout, SEM contar transform. O getBoundingClientRect
+      // incluía o encolher do Hero ao rolar (scale < 1): medindo com a página rolada, o canvas saía
+      // menor que a palavra e cortava o final ("horário de p"). O +2 evita cortar a ponta da letra.
       setMedidas({
-        largura: Math.ceil(caixa.width),
-        altura: Math.ceil(caixa.height),
+        largura: el.offsetWidth + 2,
+        altura: el.offsetHeight,
         fonte: `${css.fontWeight} ${css.fontSize} ${css.fontFamily}`,
         espacamento: css.letterSpacing === "normal" ? "0px" : css.letterSpacing,
       });

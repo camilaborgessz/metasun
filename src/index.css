@@ -156,6 +156,41 @@
   scale: 0.97;
 }
 
+/* ---------- Cartões dos números (NumerosSection) ----------
+   Cartão grafite com borda fina. No hover: a borda fica Sol, o cartão sobe 4px (só sem movimento
+   reduzido) e um brilho laranja suave (gradiente radial, sem box-shadow) segue o mouse, usando
+   --x/--y que o React atualiza. */
+.tile-numero {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--linha-escura);
+  border-radius: var(--r-card);
+  background: var(--grafite);
+  transition:
+    border-color 0.4s ease,
+    transform 0.4s var(--ease);
+}
+.tile-numero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(340px circle at var(--x, 50%) var(--y, 0%), rgba(247, 162, 27, 0.22), transparent 65%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+.tile-numero:hover {
+  border-color: var(--sol);
+}
+.tile-numero:hover::before {
+  opacity: 1;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .tile-numero:hover {
+    transform: translateY(-4px);
+  }
+}
+
 /* ---------- Revelar ao rolar (TextoRevelando, FrentesSection) ----------
    O hook useEntrada marca data-oculto="true" em quem está abaixo da dobra (só sem movimento
    reduzido) e tira a marca quando entra na tela: aí cada letra sobe e aparece, em sequência

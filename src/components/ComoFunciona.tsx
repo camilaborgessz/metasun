@@ -300,11 +300,12 @@ export default function ComoFunciona() {
                 }}
                 className="passo-revelar pt-8 max-[991px]:scroll-mt-12 min-[992px]:pt-14"
               >
-                {/* card: padding e vão de 7px, ~600px de altura no desktop (foto 586px + 2×7) */}
+                {/* card: padding e vão de 7px, ~454px de altura no desktop (foto 440px + 2×7). A referência
+                    tinha ~600px; a Camila pediu menos altura para não sobrar vazio no meio do card. */}
                 <div className="grid gap-[7px] rounded-[28px] bg-branco p-[7px] min-[992px]:grid-cols-[3fr_2fr] min-[992px]:rounded-[35px]">
                   {/* mídia: ~60% da largura, encosta nas bordas do card (raio 28px, um pouco menor que o
                       do card); overflow escondido para o parallax; no celular a foto fica em cima (4/3) */}
-                  <div className="relative aspect-[4/3] overflow-hidden rounded-[22px] min-[992px]:aspect-auto min-[992px]:min-h-[586px] min-[992px]:rounded-[28px]">
+                  <div className="relative aspect-[4/3] overflow-hidden rounded-[22px] min-[992px]:aspect-auto min-[992px]:min-h-[440px] min-[992px]:rounded-[28px]">
                     <div
                       ref={(el) => {
                         midias.current[i] = el;
