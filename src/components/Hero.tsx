@@ -51,7 +51,8 @@ export default function Hero() {
             Fazemos o estudo do consumo da sua empresa e apresentamos a economia estimada.
           </p>
 
-          {/* Um botão só: escuro com borda quase invisível; no hover um degradê laranja o preenche. */}
+          {/* Um botão só: miolo branco, borda discreta; no hover um degradê laranja o preenche
+              (face="grafite" para a versão escura). */}
           <div className="mt-2 flex w-full flex-col min-[900px]:w-auto">
             <BotaoPreenche href={cta.href}>{cta.rotulo}</BotaoPreenche>
           </div>
