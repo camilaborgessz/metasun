@@ -45,24 +45,17 @@ export default function Hero() {
             pesa no resultado da sua empresa?
           </h1>
 
-          {/* Subtítulo */}
-          <p className="max-w-[52ch] text-[clamp(17px,1.6vw,20px)] leading-[1.55] text-branco">
+          {/* Subtítulo: mais leve e mais claro/suave que o título, para haver hierarquia
+              (título branco 600 e grande · subtítulo cinza-areia 400 e menor) */}
+          <p className="max-w-[48ch] text-[clamp(16px,1.5vw,19px)] font-normal leading-[1.55] text-apoio-escuro">
             Fazemos o estudo do consumo da sua empresa e apresentamos a economia estimada.
           </p>
 
-          <div className="mt-2 flex w-full flex-col gap-3.5 min-[900px]:w-auto min-[900px]:flex-row min-[900px]:items-center">
-            {/* Primário: borda em gradiente (brilho que corre pela borda; acende no hover) */}
-            <BotaoBordaGradiente href={cta.href} className="w-full min-[900px]:w-auto">
+          {/* Um botão só. Borda e brilho laranja, miolo branco (face="grafite" ou "sol" para testar). */}
+          <div className="mt-2 flex w-full flex-col min-[900px]:w-auto">
+            <BotaoBordaGradiente href={cta.href} face="branco">
               {cta.rotulo}
             </BotaoBordaGradiente>
-
-            {/* Secundário: vidro com borda branca e brilho no hover (.btn-brilho, em index.css) */}
-            <a
-              href="#bess"
-              className="vidro btn-brilho flex h-[58px] items-center justify-center rounded-full border-[1.5px] border-branco/60 px-7 text-base font-semibold text-branco"
-            >
-              <span className="relative z-10">Conhecer o BESS</span>
-            </a>
           </div>
         </div>
       </div>

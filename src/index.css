@@ -87,9 +87,10 @@
 }
 
 /* ---------- Botão com borda em gradiente (BotaoBordaGradiente) ----------
-   Adaptado do "Hover Border Gradient" (Aceternity UI), só com CSS. Um brilho branco corre pela
-   borda (a posição vem de --bx/--by, que o React troca a cada 1s por 4s) e, no hover/foco, a
-   borda acende por inteiro. @property deixa o navegador animar a posição do brilho.
+   Adaptado do "Hover Border Gradient" (Aceternity UI), só com CSS. A borda e o brilho são LARANJA
+   (destaque); o miolo (a "face") muda de cor pela prop face: branco | grafite | sol.
+   Em repouso: borda laranja, halo suave e um brilho que dá uma volta pela borda (posição em
+   --bx/--by, trocada pelo React). Hover/foco: a borda fica laranja sólida e acende por inteiro.
    Sem box-shadow. Com movimento reduzido o tokens.css desliga as transições. */
 @property --bx {
   syntax: "<percentage>";
@@ -102,17 +103,49 @@
   initial-value: 0%;
 }
 .borda-botao {
+  --anel: 3px; /* espessura da borda laranja */
+  --face-bg: #fff;
+  --face-fg: var(--grafite);
+  --face-hover: var(--areia);
+  --face-ativo: var(--linha);
   position: relative;
   display: inline-flex;
-  width: fit-content;
-  padding: 2px; /* espessura da borda */
+  padding: var(--anel);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.2);
-  transition: background-color 0.5s ease;
+  background: rgba(247, 162, 27, 0.55);
+  transition: background-color 0.4s ease;
+}
+.borda-botao[data-face="grafite"] {
+  --face-bg: var(--grafite);
+  --face-fg: #fff;
+  --face-hover: #333;
+  --face-ativo: #000;
+}
+.borda-botao[data-face="sol"] {
+  --face-bg: var(--sol);
+  --face-fg: var(--grafite);
+  --face-hover: var(--sol-hover);
+  --face-ativo: var(--sol-ativo);
 }
 .borda-botao:hover,
 .borda-botao:focus-visible {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--sol);
+}
+/* halo laranja suave em volta do botão (em repouso) */
+.borda-botao::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  z-index: 0;
+  border-radius: inherit;
+  background: rgba(247, 162, 27, 0.4);
+  filter: blur(10px);
+  pointer-events: none;
+  transition: background-color 0.4s ease;
+}
+.borda-botao:hover::before,
+.borda-botao:focus-visible::before {
+  background: rgba(247, 162, 27, 0.65);
 }
 .borda-face {
   position: relative;
@@ -122,40 +155,46 @@
   justify-content: center;
   gap: 12px;
   width: 100%;
-  min-height: 54px;
+  min-height: 52px;
   padding: 0 32px;
   border-radius: inherit;
-  background: var(--sol);
-  color: var(--grafite);
+  background: var(--face-bg);
+  color: var(--face-fg);
   font-size: 16px;
   font-weight: 700;
+  white-space: nowrap;
   transition: background-color 0.3s ease;
+}
+.borda-botao[data-tamanho="compacto"] .borda-face {
+  min-height: 42px;
+  padding: 0 24px;
+  font-size: 15px;
 }
 .borda-botao:hover .borda-face,
 .borda-botao:focus-visible .borda-face {
-  background: var(--sol-hover);
+  background: var(--face-hover);
 }
 .borda-botao:active .borda-face {
-  background: var(--sol-ativo);
+  background: var(--face-ativo);
 }
 .borda-luz,
 .borda-acesa {
   position: absolute;
-  inset: 0;
+  inset: -4px;
   z-index: 0;
   border-radius: inherit;
-  filter: blur(2px);
+  filter: blur(5px);
   pointer-events: none;
 }
 .borda-luz {
-  background: radial-gradient(20.7% 50% at var(--bx) var(--by), #fff 0%, rgba(255, 255, 255, 0) 100%);
+  background: radial-gradient(24% 55% at var(--bx) var(--by), #ffb020 0%, rgba(247, 162, 27, 0) 100%);
   transition:
     --bx 1s linear,
     --by 1s linear,
     opacity 0.6s linear;
 }
 .borda-acesa {
-  background: radial-gradient(75% 181% at 50% 50%, #ffe2b0 0%, rgba(255, 255, 255, 0) 100%);
+  background: radial-gradient(75% 181% at 50% 50%, var(--sol) 0%, rgba(247, 162, 27, 0) 100%);
   opacity: 0;
   transition: opacity 0.6s linear;
 }
@@ -166,35 +205,6 @@
 .borda-botao:hover .borda-acesa,
 .borda-botao:focus-visible .borda-acesa {
   opacity: 1;
-}
-
-/* ---------- Botão com brilho (secundário do Hero) ----------
-   Adaptado de Uiverse.io (iZOXVL, "boton-elegante"). No hover/foco um círculo de luz cresce a
-   partir do centro, a borda clareia e o fundo fica um pouco mais claro. Sem box-shadow. */
-.btn-brilho {
-  position: relative;
-  overflow: hidden;
-  transition:
-    border-color 0.4s ease,
-    background-color 0.4s ease;
-}
-.btn-brilho::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0) 70%);
-  transform: scale(0);
-  transition: transform 0.5s ease;
-}
-.btn-brilho:hover::after,
-.btn-brilho:focus-visible::after {
-  transform: scale(4);
-}
-.btn-brilho:hover,
-.btn-brilho:focus-visible {
-  border-color: rgba(255, 255, 255, 0.95);
-  background-color: rgba(255, 255, 255, 0.2);
 }
 
 /* Vidro. Sem suporte a backdrop-filter o fundo fica mais opaco para o texto continuar legível. */
