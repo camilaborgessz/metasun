@@ -18,7 +18,32 @@ import { ChipProvisorio } from "./Chip";
 // Link do botão "Solicitar proposta". Trocar pelo WhatsApp/contato real da Meta Sun quando houver.
 const LINK_CONTATO = cta.href;
 
-type Imagem = { src: string; alt: string; largura: number; altura: number };
+type Imagem = {
+  src: string;
+  /** versões em vários tamanhos (srcset), geradas por scripts/otimizar-foto.mjs */
+  srcSet: string;
+  alt: string;
+  largura: number;
+  altura: number;
+  /** parte da foto que fica visível no recorte retrato (CSS object-position) */
+  posicao: string;
+  /** crédito da foto (licença Unsplash não exige, mas fica registrado) */
+  credito: string;
+};
+
+// Monta a foto de uma etapa a partir dos arquivos public/images/etapa-N-{480,960,1280}.webp
+function foto(n: number, alt: string, altura: number, posicao: string, credito: string): Imagem {
+  const base = `/images/etapa-${n}`;
+  return {
+    src: `${base}-960.webp`,
+    srcSet: `${base}-480.webp 480w, ${base}-960.webp 960w, ${base}-1280.webp 1280w`,
+    alt,
+    largura: 1280,
+    altura,
+    posicao,
+    credito,
+  };
+}
 
 type Etapa = {
   numero: string;
@@ -26,20 +51,23 @@ type Etapa = {
   texto: string;
   /** mostra o botão "Solicitar proposta" (como no original: só nas etapas 1 e 2) */
   botao: boolean;
-  /** foto real, retrato ~454x511 em /public. Sem foto, aparece o placeholder abaixo. */
+  /** foto da etapa (em /public/images). Sem foto, aparece o placeholder abaixo. */
   imagem?: Imagem;
   /** texto do placeholder enquanto não há foto */
   placeholder: string;
 };
 
 // Dados das etapas: para trocar texto ou foto, é só editar aqui.
-// Exemplo de foto: imagem: { src: "/images/etapa-1.webp", alt: "...", largura: 454, altura: 511 }
+// As fotos abaixo são do banco Unsplash (enviadas pela Camila), não fotos de obras da Meta Sun:
+// trocar por fotos reais quando houver. Para otimizar uma foto nova:
+//   node scripts/otimizar-foto.mjs minha-foto.jpg public/images/etapa-1
 const steps: Etapa[] = [
   {
     numero: "01",
     nome: "Estudo técnico",
     texto: "Analisamos o consumo da sua empresa, a demanda e os horários de uso. É aqui que aparece o peso do horário de ponta, o período em que a tarifa é maior para empresas do grupo A. Esse levantamento é a base de todo o projeto.",
     botao: true,
+    imagem: foto(1, "Eletricista de capacete amarelo no painel", 854, "40% 50%", "Emmanuel Ikwuegbu, Unsplash"),
     placeholder: "[Foto: análise de consumo, fatura ou medição]",
   },
   {
@@ -47,6 +75,7 @@ const steps: Etapa[] = [
     nome: "Proposta consultiva",
     texto: "Com o estudo pronto, apresentamos a economia estimada em números, antes de você decidir qualquer coisa. A proposta indica a solução para a sua realidade e traz as condições de pagamento facilitado.",
     botao: true,
+    imagem: foto(2, "Dois colegas discutindo ideias no quadro", 854, "54% 50%", "ThisisEngineering, Unsplash"),
     placeholder: "[Foto: reunião de proposta]",
   },
   {
@@ -54,6 +83,7 @@ const steps: Etapa[] = [
     nome: "Projeto e obra",
     texto: "O projeto e a obra são executados pela engenharia própria da Meta Sun, a mesma que fez o seu estudo. É o trabalho de mais de 1.300 obras concluídas em Rondônia e na Região Norte.",
     botao: false,
+    imagem: foto(3, "Instalador colocando painel solar no telhado", 720, "64% 50%", "Raze Solar, Unsplash"),
     placeholder: "[Foto: instalação de painéis]",
   },
   {
@@ -61,6 +91,7 @@ const steps: Etapa[] = [
     nome: "Monitoramento",
     texto: "Depois da instalação, seguimos acompanhando o sistema para que o resultado se mantenha com o passar dos anos. Você acompanha esse resultado na sua conta de energia, e o suporte técnico conta com 11 engenheiros.",
     botao: false,
+    imagem: foto(4, "Engenheiro de colete e capacete na usina solar", 853, "75% 50%", "Steve Scarter, Unsplash"),
     placeholder: "[Foto: monitoramento no app ou painel]",
   },
 ];
@@ -283,10 +314,14 @@ export default function ComoFunciona() {
                       {e.imagem ? (
                         <img
                           src={e.imagem.src}
+                          srcSet={e.imagem.srcSet}
+                          sizes="(min-width: 992px) 1100px, 100vw" /* a foto paisagem é cortada na altura: renderiza com ~1000px de largura */
                           alt={e.imagem.alt}
                           width={e.imagem.largura}
                           height={e.imagem.altura}
                           loading={i === 0 ? "eager" : "lazy"}
+                          decoding="async"
+                          style={{ objectPosition: e.imagem.posicao }}
                           className="h-full w-full object-cover"
                         />
                       ) : (

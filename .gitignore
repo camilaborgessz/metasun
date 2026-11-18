@@ -5,3 +5,4 @@ dist
 
 # prints gerados por scripts/shot.mjs (as imagens de referência ficam versionadas)
 reference/meu-*.png
+reference/etapa-*.png
