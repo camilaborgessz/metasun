@@ -237,7 +237,9 @@ export default function ComoFunciona() {
 
   return (
     <section id="como-funciona" aria-labelledby="titulo-como-funciona" className="bg-areia py-[var(--section-y)]">
-      {/* margem lateral de 28px e largura de até 1240px, como na referência (o resto do site usa o container de 1120px) */}
+      {/* margem lateral de 20px (celular) / 28px e largura de até 1240px, como na referência (o resto do
+          site usa o container de 1120px). A barra de etapas fixa do celular usa -mx-5 / -mx-7 para
+          acompanhar essa mesma margem: se mudar uma, mude a outra (senão aparece rolagem horizontal). */}
       <div className="mx-auto w-[min(100%-40px,1240px)] min-[640px]:w-[min(100%-56px,1240px)]">
         <h2
           id="titulo-como-funciona"
@@ -255,7 +257,7 @@ export default function ComoFunciona() {
           {/* Menu: lateral e sticky no desktop; barra horizontal de itens com scroll lateral no celular */}
           <nav
             aria-label="Etapas"
-            className="z-30 -mx-[var(--gutter)] bg-areia px-[var(--gutter)] py-2 max-[991px]:sticky max-[991px]:top-[72px] max-[991px]:pt-4 min-[992px]:sticky min-[992px]:top-[105px] min-[992px]:mx-0 min-[992px]:self-start min-[992px]:bg-transparent min-[992px]:p-0"
+            className="z-30 -mx-5 bg-areia px-5 py-2 min-[640px]:-mx-7 min-[640px]:px-7 max-[991px]:sticky max-[991px]:top-[72px] max-[991px]:pt-4 min-[992px]:sticky min-[992px]:top-[105px] min-[992px]:mx-0 min-[992px]:self-start min-[992px]:bg-transparent min-[992px]:p-0"
           >
             <ol
               ref={listaRef}

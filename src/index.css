@@ -319,42 +319,116 @@
     animation-name: fluxo-x;
   }
 }
-.bess-pausado .fluxo-linha,
-.bess-pausado .raio-luz {
+.bess-pausado .fluxo-linha {
   animation-play-state: paused;
 }
 
-/* ---------- Raios de luz (RaiosDeLuz, na seção BESS) ----------
-   Faixas desfocadas com degradê Sol → transparente, que balançam (±4°) e pulsam de brilho. O conjunto
-   esmaece para baixo (máscara). O brilho máximo é baixo para o texto cinza seguir legível. */
-.raios-luz {
-  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 35%, transparent 85%);
-  mask-image: linear-gradient(to bottom, #000 0%, #000 35%, transparent 85%);
-}
-.raio-luz {
+/* ---------- Fundo de pontos (BessSection) ----------
+   Padrão de pontos do Magic UI (Dot Pattern): pontos de 1px a cada 16px, brancos e suaves sobre o
+   azul-marinho, que aparecem no centro da seção e esmaecem para as bordas (máscara radial). */
+.fundo-pontos::before {
+  content: "";
   position: absolute;
-  top: -12%;
-  left: var(--l);
-  width: var(--w);
-  height: 80%;
-  border-radius: 9999px;
-  transform-origin: 50% 0;
-  transform: translateX(-50%) rotate(var(--r));
-  background: linear-gradient(to bottom, rgba(247, 162, 27, 0.9), rgba(247, 162, 27, 0) 92%);
-  filter: blur(34px);
-  mix-blend-mode: screen;
-  opacity: var(--i); /* parado (movimento reduzido ou pausado): fica neste brilho */
-  will-change: transform, opacity;
-  animation: raio-luz var(--t) ease-in-out var(--d) infinite alternate;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.32) 1px, transparent 1.5px);
+  background-size: 16px 16px;
+  -webkit-mask-image: radial-gradient(ellipse 65% 55% at 50% 45%, #000 0%, transparent 100%);
+  mask-image: radial-gradient(ellipse 65% 55% at 50% 45%, #000 0%, transparent 100%);
 }
-@keyframes raio-luz {
-  from {
-    opacity: calc(var(--i) * 0.4);
-    transform: translateX(-50%) rotate(calc(var(--r) - 4deg));
+
+/* ---------- Linha do tempo (BessSection + useScrollProgress) ----------
+   Trilho vertical com duas camadas (base de 1px branca a 20% e progresso de 2px laranja que preenche
+   com scaleY), bolinhas que acendem e cards que aparecem. O hook grava --progresso e --fim na lista e
+   data-ativo em cada passo; o CSS faz o resto. Só transform e opacity animam.
+   Sem JS ou com movimento reduzido: tudo já aparece pronto (linha cheia, bolinhas acesas, cards visíveis). */
+.timeline {
+  --ponto: 32px;
+  --borda-ponto: 8px;
+  position: relative;
+}
+@media (max-width: 991px) {
+  .timeline {
+    --ponto: 24px;
+    --borda-ponto: 6px;
   }
-  to {
-    opacity: var(--i);
-    transform: translateX(-50%) rotate(calc(var(--r) + 4deg));
+}
+/* espaço entre os passos: 64px no celular, 96px no desktop e, em telas altas (≥820px), 24% da altura
+   da tela, para a coluna dos passos ficar bem mais alta que o cabeçalho e ele poder ficar fixo */
+.timeline-passo:not(:last-child) {
+  padding-bottom: 64px;
+}
+@media (min-width: 992px) {
+  .timeline-passo:not(:last-child) {
+    padding-bottom: 96px;
+  }
+}
+@media (min-width: 992px) and (min-height: 820px) {
+  .timeline-passo:not(:last-child) {
+    padding-bottom: 24vh;
+  }
+  /* cabeçalho da esquerda fixo enquanto os passos rolam (a pílula do Header ocupa até ~72px) */
+  .bess-cabecalho {
+    position: sticky;
+    top: 104px;
+    align-self: start;
+  }
+}
+.timeline-trilho {
+  position: absolute;
+  left: calc(var(--ponto) / 2 - 1px);
+  top: calc(var(--ponto) / 2);
+  width: 2px;
+  height: var(--fim, calc(100% - var(--ponto) / 2));
+  background: linear-gradient(rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)) center / 1px 100% no-repeat;
+}
+.timeline-progresso {
+  position: absolute;
+  inset: 0;
+  background: var(--sol);
+  transform-origin: top;
+  transform: scaleY(var(--progresso, 1));
+}
+.timeline-ponto {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 2;
+  box-sizing: border-box;
+  width: var(--ponto);
+  height: var(--ponto);
+  border: var(--borda-ponto) solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  background: var(--marinho);
+  transition: border-color 0.4s ease;
+}
+.timeline-passo[data-ativo="true"] .timeline-ponto {
+  border-color: var(--sol);
+  animation: ponto-pulso 0.4s ease-out 1;
+}
+@keyframes ponto-pulso {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.15);
+  }
+}
+.timeline-cartao {
+  transition:
+    opacity 0.5s ease-out,
+    transform 0.5s ease-out;
+}
+/* só depois do JS ligar (data-pronto): passos ainda não alcançados ficam esmaecidos e 24px abaixo */
+.timeline[data-pronto="true"] .timeline-passo:not([data-ativo="true"]) .timeline-cartao {
+  opacity: 0.35;
+  transform: translateY(24px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .timeline-ponto {
+    border-color: var(--sol);
   }
 }
 

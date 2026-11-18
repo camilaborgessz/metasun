@@ -72,7 +72,15 @@ export const IconeRaio = (p: SVGProps<SVGSVGElement>) => (
   </Icone>
 );
 
-export const IconePausa = (p: SVGProps<SVGSVGElement>) => (
+// Sol: "gera" (linha do tempo do BESS)
+export const IconeSol = (p: SVGProps<SVGSVGElement>) => (
+  <Icone {...p}>
+    <circle cx="12" cy="12" r="4" />
+    <path d="M12 2.5V5M12 19v2.5M2.5 12H5M19 12h2.5M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8" />
+  </Icone>
+);
+
+export const IconePausa =(p: SVGProps<SVGSVGElement>) => (
   <Icone {...p}>
     <path d="M8.5 5v14M15.5 5v14" />
   </Icone>
