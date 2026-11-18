@@ -1,8 +1,8 @@
-import { placeholders } from "../content/placeholders";
 import StatNumber from "./StatNumber";
 
 // Seção de números em areia. Valores e rótulos vieram da Meta Sun.
-// Fonte: registro interno da própria empresa. O PERÍODO ainda é placeholder (chip "provisório").
+// Sem linha de fonte e sem chip "provisório" (decisão da Camila). Para voltar a mostrar a
+// fonte, passe `fonte="..."` ao StatNumber.
 
 const numeros = [
   { valor: 1300, sufixo: "+", rotulo: "Obras concluídas" },
@@ -21,7 +21,6 @@ export default function NumerosSection() {
               valor={n.valor}
               sufixo={n.sufixo}
               rotulo={n.rotulo}
-              fonte={placeholders.fonteNumerosHome}
             />
           ))}
         </div>

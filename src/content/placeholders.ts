@@ -22,7 +22,6 @@ export const placeholders = {
   faixaDePonta: "[00h às 00h]",
 
   // Fonte dos números da Home (dados da própria empresa). Confirmar o período, ex.: "desde 20XX"
-  fonteNumerosHome: "Fonte: registro interno da Meta Sun, [período]",
 
   // Páginas que ainda não existem
   urlPoliticaPrivacidade: "#politica-de-privacidade",

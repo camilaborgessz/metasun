@@ -34,20 +34,13 @@ export default function Hero() {
 
         {/* 900px = 780px de conteúdo do mockup + 60px de padding de cada lado (box-sizing) */}
         <div className="flex max-w-[900px] flex-col items-start gap-[22px] px-6 pb-8 pt-32 min-[900px]:px-[60px] min-[900px]:pb-[52px]">
-          <p className="vidro flex items-center gap-2.5 rounded-full border border-branco/30 px-4 py-[9px] text-[13px] font-semibold tracking-[0.04em] text-branco">
-            <span aria-hidden="true" className="size-2 shrink-0 rounded-full bg-sol" />
-            Nós vendemos soluções energéticas e consultorias de economia
-          </p>
+
 
           <h1 className="text-[clamp(34px,5.6vw,58px)] font-semibold leading-[1.08] tracking-[-0.025em] text-branco">
             Quanto o <span className="text-sol">horário de ponta</span> pesa no resultado da sua
             empresa?
           </h1>
 
-          {/* Linha de apoio: explica o termo técnico na própria dobra */}
-          <p className="max-w-[52ch] text-[clamp(16px,1.5vw,18px)] leading-relaxed text-branco">
-            É a faixa do dia em que a distribuidora cobra mais pela energia.
-          </p>
 
           <div className="mt-2 flex w-full flex-col gap-3.5 min-[900px]:w-auto min-[900px]:flex-row min-[900px]:items-center">
             {/* Primário: pílula Sol com círculo grafite e seta */}
