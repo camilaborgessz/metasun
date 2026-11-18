@@ -102,7 +102,7 @@ export default function Header({ onDark = false, sobreFoto = false }: Props) {
 
             <div className="ml-auto flex items-center gap-3 menu:ml-0">
               {/* O CTA só aparece a partir de 640px; abaixo disso vai para a barra da base.
-                  Miolo grafite com borda laranja nos dois estados (igual ao botão do Hero). */}
+                  Escuro com borda quase invisível nos dois estados (igual ao botão do Hero). */}
               <div className="hidden sm:block">
                 <BotaoPreenche href={cta.href} tamanho="compacto" seta={false}>
                   {cta.rotulo}

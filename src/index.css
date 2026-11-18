@@ -88,9 +88,10 @@
 
 /* ---------- Botão com preenchimento (BotaoPreenche) ----------
    Adaptado de Uiverse.io (xueyuantan). No hover/foco um degradê laranja varre o botão da esquerda
-   para a direita e o texto passa de branco para grafite. Em repouso: miolo grafite, texto branco e
-   borda laranja de 2px. Mudanças em relação ao original: sem box-shadow (elevação é plana; a
-   borda laranja faz o destaque) e cores da Meta Sun no lugar do verde/amarelo.
+   para a direita e o texto passa de branco para grafite. Em repouso: miolo grafite, texto branco
+   em negrito e uma borda cinza-escura quase invisível (#2c2c2c), sem laranja. No hover a borda
+   também fica laranja. Mudanças em relação ao original: sem box-shadow (elevação é plana) e
+   cores da Meta Sun no lugar do verde/amarelo.
    Com movimento reduzido o tokens.css desliga a transição: o estado final aparece direto. */
 .btn-varredura {
   position: relative;
@@ -101,7 +102,7 @@
   gap: 12px;
   min-height: 58px;
   padding: 0 32px;
-  border: 2px solid var(--sol);
+  border: 2px solid #2c2c2c;
   border-radius: 999px;
   background: var(--grafite);
   color: #fff;
@@ -111,6 +112,7 @@
   overflow: hidden;
   transition:
     color 0.5s ease,
+    border-color 0.5s ease,
     scale 0.2s ease;
 }
 .btn-varredura[data-tamanho="compacto"] {
@@ -133,6 +135,7 @@
 .btn-varredura:hover,
 .btn-varredura:focus-visible {
   color: var(--grafite);
+  border-color: var(--sol);
 }
 .btn-varredura:hover::before,
 .btn-varredura:focus-visible::before {

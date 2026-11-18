@@ -2,8 +2,9 @@ import type { ReactNode } from "react";
 import { IconeSeta } from "./icons";
 
 // Botão com preenchimento no hover (Uiverse, xueyuantan), adaptado à Meta Sun. Estilos em index.css
-// (.btn-varredura). Miolo grafite com borda laranja; no hover/foco um degradê laranja varre o botão
-// da esquerda para a direita e o texto vira grafite. Sem movimento automático (só no hover).
+// (.btn-varredura). Em repouso: miolo grafite, texto branco e borda cinza-escura quase invisível
+// (sem laranja). No hover/foco um degradê laranja varre o botão da esquerda para a direita e o
+// texto vira grafite. Sem movimento automático (só no hover).
 // Movimento reduzido: o tokens.css desliga a transição e o estado final aparece direto.
 
 type Props = {
